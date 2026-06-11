@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Kategori Baru - Book Market</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="main-app-container px-4 pt-4 bg-white shadow-lg" style="border-radius: 40px 40px 0 0; margin-top: 20px;">
+        
+        <div class="mx-auto mb-4" style="width: 50px; height: 5px; background-color: #e2e8f0; border-radius: 10px;"></div>
+
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-1" style="color: #1e293b; font-size: 1.6rem;">Tambah Kategori Baru</h2>
+            <p class="text-muted small">Atur kategori pengeluaran Anda</p>
+        </div>
+
+        <form id="formKategori">
+            
+            <div class="mb-4 text-center">
+                <div class="avatar-preview-wrapper" id="preview_border">
+                    <div class="icon-preview-large clr-green" id="large_icon_view" style="background-color: #dcfce7;">
+                        <i class="bi bi-gift-fill" id="large_icon_class" style="color: #15803d;"></i>
+                    </div>
+                    <div class="camera-badge">
+                        <i class="bi bi-camera-fill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label-custom mb-2 d-block" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Nama Kategori</label>
+                <input type="text" id="nama_kategori" class="form-control input-field-custom" style="background-color: #f1f5f9 !important;" placeholder="Masukkan nama kategori..." required />
+            </div>
+
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label-custom m-0" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Pilih Ikon</label>
+                    <a href="#" class="text-decoration-none fw-bold" style="color: #0d9488; font-size: 0.85rem;">Lihat Semua</a>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center gap-2">
+                    <div class="icon-picker-btn" data-icon="bi-house-door-fill"><i class="bi bi-house-door-fill"></i></div>
+                    <div class="icon-picker-btn" data-icon="bi-airplane-fill"><i class="bi bi-airplane-fill"></i></div>
+                    <div class="icon-picker-btn active-icon" data-icon="bi-gift-fill"><i class="bi bi-gift-fill"></i></div>
+                    <div class="icon-picker-btn" data-icon="bi-controller"><i class="bi bi-controller"></i></div>
+                    <div class="icon-picker-btn" data-icon="bi-suit-heart-fill"><i class="bi bi-suit-heart-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <label class="form-label-custom mb-2 d-block" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Pilih Warna</label>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="color-picker-dot clr-green active-color" data-color="clr-green" data-hex-bg="#dcfce7" data-hex-text="#15803d"></div>
+                    <div class="color-picker-dot clr-orange" data-color="clr-orange" data-hex-bg="#ffedd5" data-hex-text="#ea580c"></div>
+                    <div class="color-picker-dot clr-red" data-color="clr-red" data-hex-bg="#ffe4e6" data-hex-text="#f43f5e"></div>
+                    <div class="color-picker-dot clr-purple" data-color="clr-purple" data-hex-bg="#e0e7ff" data-hex-text="#6366f1"></div>
+                    <div class="color-picker-dot clr-navy" data-color="clr-navy" data-hex-bg="#dbeafe" data-hex-text="#1e3a8a"></div>
+                    <div class="btn-add-custom-color"><i class="bi bi-plus-lg"></i></div>
+                </div>
+            </div>
+
+            <div class="row g-3 pb-4">
+    <div class="col-6">
+        <a href="/tambah-anggaran/index.html" class="btn btn-action-cancel text-center text-white text-decoration-none d-block">Batal</a>
+    </div>
+    <div class="col-6">
+        <button type="button" id="btnSimpanKategori" class="btn btn-action-save text-white">Simpan</button>
+    </div>
+</div>
+
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const iconButtons = document.querySelectorAll('.icon-picker-btn');
+            const colorButtons = document.querySelectorAll('.color-picker-dot');
+            const largeIconClass = document.getElementById('large_icon_class');
+            const largeIconView = document.getElementById('large_icon_view');
+            
+            // Variabel penampung data yang sedang aktif terpilih (default awal)
+            let ikonTerpilih = "bi-gift-fill";
+            let warnaClassTerpilih = "clr-green";
+
+            // 1. Pemilihan Ikon
+            iconButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    iconButtons.forEach(i => i.classList.remove('active-icon'));
+                    this.classList.add('active-icon');
+                    ikonTerpilih = this.getAttribute('data-icon');
+                    largeIconClass.className = `bi ${ikonTerpilih}`;
+                });
+            });
+
+            // 2. Pemilihan Warna
+            colorButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    colorButtons.forEach(c => c.classList.remove('active-color'));
+                    this.classList.add('active-color');
+                    
+                    warnaClassTerpilih = this.getAttribute('data-color');
+                    const hexBg = this.getAttribute('data-hex-bg');
+                    const hexText = this.getAttribute('data-hex-text');
+                    
+                    largeIconView.style.backgroundColor = hexBg;
+                    largeIconClass.style.color = hexText;
+                });
+            });
+
+            // 3. LOGIKA TOMBOL SIMPAN (PROSES LOCALSTORAGE)
+            document.getElementById('btnSimpanKategori').addEventListener('click', function() {
+                const namaKategori = document.getElementById('nama_kategori').value.trim();
+                
+                if (namaKategori === "") {
+                    alert("Silakan masukkan nama kategori terlebih dahulu!");
+                    return;
+                }
+
+                // Ambil data kategori kustom yang sudah ada atau buat array baru jika belum ada
+                let listKategoriKustom = JSON.parse(localStorage.getItem('kategori_kustom')) || [];
+
+                // Bungkus data kategori baru menjadi objek
+                const kategoriBaru = {
+                    nama: namaKategori,
+                    ikon: ikonTerpilih,
+                    warnaClass: warnaClassTerpilih
+                };
+
+                // Masukkan ke dalam daftar list array
+                listKategoriKustom.push(kategoriBaru);
+
+                // Simpan kembali ke localStorage memori browser
+                localStorage.setItem('kategori_kustom', JSON.stringify(listKategoriKustom));
+
+                // Alihkan halaman kembali ke form tambah anggaran
+                window.location.href = "/tambah-anggaran/index.html";
+            });
+        });
+    </script>
+</body>
+</html>

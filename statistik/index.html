@@ -53,6 +53,12 @@
         /* ============ HEADER ============ */
         header.page-head {
             padding: 20px 20px 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            max-width: 560px;
+            margin: 0 auto;
         }
 
         header.page-head h1 {
@@ -71,6 +77,40 @@
             max-width: 560px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* ============ MODE TOGGLE (Pengeluaran / Pemasukan) ============ */
+        .mode-toggle {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .mode-toggle button {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 5px 11px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-soft);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background .15s ease, color .15s ease, border-color .15s ease;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .mode-toggle button.active[data-mode="expense"] {
+            background: var(--danger-soft);
+            color: var(--danger);
+            border-color: var(--danger-soft);
+        }
+
+        .mode-toggle button.active[data-mode="income"] {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: var(--accent-soft);
         }
 
         /* ============ FILTER BAR ============ */
@@ -601,6 +641,10 @@
                 max-width: 920px;
             }
 
+            header.page-head {
+                max-width: 920px;
+            }
+
             .filter-section {
                 display: flex;
                 gap: 14px;
@@ -672,8 +716,14 @@
 <body>
 
     <header class="page-head">
-        <h1>Statistik</h1>
-        <p id="periodContext">Ringkasan keuangan kamu</p>
+        <div>
+            <h1>Statistik</h1>
+            <p id="periodContext">Ringkasan keuangan kamu</p>
+        </div>
+        <div class="mode-toggle" role="group" aria-label="Pilih jenis statistik">
+            <button type="button" class="active" data-mode="expense" aria-pressed="true">Pengeluaran</button>
+            <button type="button" data-mode="income" aria-pressed="false">Pemasukan</button>
+        </div>
     </header>
 
     <main>
@@ -722,15 +772,15 @@
 
         <!-- ============ SUMMARY ============ -->
         <section class="summary" aria-label="Ringkasan budget">
-            <div class="summary-card">
-                <div class="label">Total Budget</div>
+            <div class="summary-card" id="cardBudgetWrap">
+                <div class="label" id="cardBudgetLabel">Total Budget</div>
                 <div class="value" id="totalBudget">Rp 2.500.000</div>
             </div>
-            <div class="summary-card">
-                <div class="label">Total Terpakai</div>
+            <div class="summary-card" id="cardUsedWrap">
+                <div class="label" id="cardUsedLabel">Total Terpakai</div>
                 <div class="value" id="totalUsed">Rp 1.840.000</div>
             </div>
-            <div class="summary-card full">
+            <div class="summary-card full" id="cardRemainingWrap">
                 <div class="label">Sisa Budget</div>
                 <div class="value" id="totalRemaining">Rp 660.000</div>
                 <div class="progress-track">
@@ -765,7 +815,7 @@
         <section class="view-panel" id="panelChart" role="tabpanel" aria-labelledby="tabChart">
             <div class="chart-card-grid">
                 <div class="chart-card">
-                    <h2>Pengeluaran per Minggu</h2>
+                    <h2 id="barTitle">Pengeluaran per Minggu</h2>
                     <p class="chart-desc" id="barDesc">Total pengeluaran tiap minggu di Juni 2026</p>
                     <div class="chart-wrap">
                         <canvas id="barChart" role="img" aria-label="Grafik batang pengeluaran per minggu"></canvas>
@@ -773,8 +823,8 @@
                 </div>
 
                 <div class="chart-card">
-                    <h2>Pengeluaran per Kategori</h2>
-                    <p class="chart-desc">Persentase pengeluaran berdasarkan kategori</p>
+                    <h2 id="pieTitle">Pengeluaran per Kategori</h2>
+                    <p class="chart-desc" id="pieDesc">Persentase pengeluaran berdasarkan kategori</p>
                     <div class="chart-wrap pie">
                         <canvas id="pieChart" role="img"
                             aria-label="Grafik lingkaran persentase pengeluaran per kategori"></canvas>
@@ -796,6 +846,7 @@
            STATE
         ========================================================= */
         const state = {
+            mode: 'expense',       // expense | income
             filter: 'monthly',     // monthly | weekly | custom
             monthIndex: 5,         // 0-11, Juni = 5
             year: 2026,
@@ -870,6 +921,60 @@
             }
         };
 
+        /* Dataset Pemasukan */
+        const incomeDataset = {
+            monthly: {
+                5: { // Juni 2026
+                    totalIncome: 4200000,
+                    weeklyIncome: [1000000, 1000000, 1000000, 1200000],
+                    categories: [
+                        { name: 'Gaji', value: 3500000, color: '#4F6F52', icon: 'ti-briefcase' },
+                        { name: 'Freelance', value: 450000, color: '#7A8FAE', icon: 'ti-laptop' },
+                        { name: 'Hadiah', value: 150000, color: '#C9A227', icon: 'ti-gift' },
+                        { name: 'Lainnya', value: 100000, color: '#C9B458', icon: 'ti-dots' },
+                    ]
+                },
+                4: { // Mei 2026
+                    totalIncome: 3950000,
+                    weeklyIncome: [1000000, 950000, 1000000, 1000000],
+                    categories: [
+                        { name: 'Gaji', value: 3500000, color: '#4F6F52', icon: 'ti-briefcase' },
+                        { name: 'Freelance', value: 300000, color: '#7A8FAE', icon: 'ti-laptop' },
+                        { name: 'Hadiah', value: 50000, color: '#C9A227', icon: 'ti-gift' },
+                        { name: 'Lainnya', value: 100000, color: '#C9B458', icon: 'ti-dots' },
+                    ]
+                }
+            },
+            weekly: {
+                0: {
+                    totalIncome: 1200000,
+                    dailyIncome: [0, 0, 0, 0, 0, 1200000, 0],
+                    categories: [
+                        { name: 'Gaji', value: 1000000, color: '#4F6F52', icon: 'ti-briefcase' },
+                        { name: 'Freelance', value: 150000, color: '#7A8FAE', icon: 'ti-laptop' },
+                        { name: 'Lainnya', value: 50000, color: '#C9B458', icon: 'ti-dots' },
+                    ]
+                },
+                "-1": {
+                    totalIncome: 1000000,
+                    dailyIncome: [0, 0, 0, 0, 0, 1000000, 0],
+                    categories: [
+                        { name: 'Gaji', value: 1000000, color: '#4F6F52', icon: 'ti-briefcase' },
+                    ]
+                }
+            },
+            custom: {
+                totalIncome: 1450000,
+                weeklyIncome: [1000000, 450000],
+                categories: [
+                    { name: 'Gaji', value: 1000000, color: '#4F6F52', icon: 'ti-briefcase' },
+                    { name: 'Freelance', value: 300000, color: '#7A8FAE', icon: 'ti-laptop' },
+                    { name: 'Hadiah', value: 100000, color: '#C9A227', icon: 'ti-gift' },
+                    { name: 'Lainnya', value: 50000, color: '#C9B458', icon: 'ti-dots' },
+                ]
+            }
+        };
+
         /* =========================================================
            HELPERS
         ========================================================= */
@@ -895,9 +1000,58 @@
 
 
         function getActiveData() {
-            if (state.filter === 'monthly') return dataset.monthly[state.monthIndex] || dataset.monthly[5];
-            if (state.filter === 'weekly') return dataset.weekly[state.weekOffset] || dataset.weekly[0];
-            return dataset.custom;
+            const ds = state.mode === 'income' ? incomeDataset : dataset;
+            if (state.filter === 'monthly') return ds.monthly[state.monthIndex] || ds.monthly[5];
+            if (state.filter === 'weekly') return ds.weekly[state.weekOffset] || ds.weekly[0];
+            return ds.custom;
+        }
+
+        /* =========================================================
+           MODE TOGGLE (Pengeluaran / Pemasukan)
+        ========================================================= */
+        const modeButtons = document.querySelectorAll('.mode-toggle button');
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.classList.contains('active')) return;
+                modeButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+                state.mode = btn.dataset.mode;
+                applyModeUI();
+                updatePeriodLabel();
+                renderAll();
+            });
+        });
+
+        function applyModeUI() {
+            const isIncome = state.mode === 'income';
+
+            // Label tab kedua: Budget (expense) vs Sumber (income)
+            tabBudget.textContent = isIncome ? 'Sumber' : 'Budget';
+
+            // Alert hanya relevan untuk pengeluaran (budget); renderSummary akan mengatur hidden-nya
+
+            // Summary cards: untuk pemasukan tampilkan hanya 1 card "Total Pemasukan"
+            const cardBudget = document.getElementById('cardBudgetLabel');
+            const cardUsed = document.getElementById('cardUsedLabel');
+            const cardBudgetWrap = document.getElementById('cardBudgetWrap');
+            const cardUsedWrap = document.getElementById('cardUsedWrap');
+            const cardRemainingWrap = document.getElementById('cardRemainingWrap');
+
+            if (isIncome) {
+                cardBudget.textContent = 'Total Pemasukan';
+                cardBudgetWrap.classList.add('full');
+                cardUsedWrap.hidden = true;
+                cardRemainingWrap.hidden = true;
+            } else {
+                cardBudget.textContent = 'Total Budget';
+                cardUsed.textContent = 'Total Terpakai';
+                cardBudgetWrap.classList.remove('full');
+                cardUsedWrap.hidden = false;
+                cardRemainingWrap.hidden = false;
+                cardRemainingWrap.querySelector('.label').textContent = 'Sisa Budget';
+                document.getElementById('totalProgress').parentElement.hidden = false;
+            }
         }
 
         /* =========================================================
@@ -1007,6 +1161,14 @@
         ========================================================= */
         function renderSummary() {
             const d = getActiveData();
+
+            if (state.mode === 'income') {
+                document.getElementById('totalBudget').textContent = rupiah(d.totalIncome);
+                document.getElementById('budgetAlert').hidden = true;
+                return;
+            }
+
+            // mode: expense
             const status = getBudgetStatus(d.totalUsed, d.totalBudget);
             const { pct, remaining, level } = status;
 
@@ -1063,7 +1225,10 @@
             'ti-car': '<path d="M5 17h-2v-6l2 -5h11l2 5h1a2 2 0 0 1 2 2v4h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
             'ti-movie': '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5l3 4M14 5l3 4"/>',
             'ti-shopping-bag': '<path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
-            'ti-dots': '<circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>'
+            'ti-dots': '<circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>',
+            'ti-briefcase': '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
+            'ti-laptop': '<rect x="4" y="4" width="16" height="11" rx="1"/><path d="M2 19h20"/>',
+            'ti-gift': '<rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-1.5 0-3-1-3-2.5S10.5 3 12 4.5C13.5 3 15 3.5 15 5.5S13.5 8 12 8z"/>'
         };
 
         /* SVG inline ikon kategori untuk elemen HTML (legend, budget list) */
@@ -1130,20 +1295,29 @@
             const ctxPie = document.getElementById('pieChart');
             const barDesc = document.getElementById('barDesc');
 
+            const isIncome = state.mode === 'income';
+            const wordPeriode = isIncome ? 'pemasukan' : 'pengeluaran';
+
             let barLabels, barData;
             if (state.filter === 'weekly') {
                 barLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-                barData = d.dailyExpense;
-                barDesc.textContent = 'Total pengeluaran tiap hari minggu ini';
+                barData = isIncome ? d.dailyIncome : d.dailyExpense;
+                barDesc.textContent = `Total ${wordPeriode} tiap hari minggu ini`;
             } else if (state.filter === 'monthly') {
-                barLabels = d.weeklyExpense.map((_, i) => `Minggu ${i + 1}`);
-                barData = d.weeklyExpense;
-                barDesc.textContent = `Total pengeluaran tiap minggu di ${monthNames[state.monthIndex]} ${state.year}`;
+                const arr = isIncome ? d.weeklyIncome : d.weeklyExpense;
+                barLabels = arr.map((_, i) => `Minggu ${i + 1}`);
+                barData = arr;
+                barDesc.textContent = `Total ${wordPeriode} tiap minggu di ${monthNames[state.monthIndex]} ${state.year}`;
             } else {
-                barLabels = d.weeklyExpense.map((_, i) => `Minggu ${i + 1}`);
-                barData = d.weeklyExpense;
-                barDesc.textContent = 'Total pengeluaran per minggu pada rentang terpilih';
+                const arr = isIncome ? d.weeklyIncome : d.weeklyExpense;
+                barLabels = arr.map((_, i) => `Minggu ${i + 1}`);
+                barData = arr;
+                barDesc.textContent = `Total ${wordPeriode} per minggu pada rentang terpilih`;
             }
+
+            document.getElementById('barTitle').textContent = (isIncome ? 'Pemasukan per ' : 'Pengeluaran per ') + (state.filter === 'weekly' ? 'Hari' : 'Minggu');
+            document.getElementById('pieTitle').textContent = isIncome ? 'Pemasukan per Sumber' : 'Pengeluaran per Kategori';
+            document.getElementById('pieDesc').textContent = isIncome ? 'Persentase pemasukan berdasarkan sumber' : 'Persentase pengeluaran berdasarkan kategori';
 
             const sharedFont = { family: "Inter, sans-serif", size: 11 };
 
@@ -1154,7 +1328,7 @@
                     labels: barLabels,
                     datasets: [{
                         data: barData,
-                        backgroundColor: '#4F6F52',
+                        backgroundColor: isIncome ? '#4F6F52' : '#B5544A',
                         borderRadius: 6,
                         maxBarThickness: 36
                     }]
@@ -1244,6 +1418,32 @@
             const d = getActiveData();
             const list = document.getElementById('budgetList');
 
+            if (state.mode === 'income') {
+                const total = d.categories.reduce((s, c) => s + c.value, 0);
+                list.innerHTML = d.categories.map(c => {
+                    const pct = total > 0 ? Math.round((c.value / total) * 100) : 0;
+                    return `<div class="budget-item">
+        <div class="top-row">
+          <div class="cat-name">
+          <span class="cat-dot" style="background:${c.color}22; color:${c.color}">${categoryIconSVG(c.icon, c.color)}</span>
+            ${c.name}
+          </div>
+          <div class="remaining">
+            <span class="budget-label">Jumlah</span>
+            <strong>${rupiah(c.value)}</strong>
+          </div>
+        </div>
+        <div class="pct-row">
+          <span class="pct-label" style="color:${c.color}">${pct}%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${pct}%; background:${c.color}"></div>
+        </div>
+      </div>`;
+                }).join('');
+                return;
+            }
+
             const warnIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
             const dangerIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 
@@ -1294,6 +1494,7 @@
             renderBudget();
         }
 
+        applyModeUI();
         updatePeriodLabel();
         renderAll();
     </script>

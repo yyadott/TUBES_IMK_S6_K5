@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistik - Catatan Keuangan</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #FAFAF8;
+            --surface: #FFFFFF;
+            --border: #E6E4E0;
+            --text: #2B2B28;
+            --text-soft: #8A8782;
+            --accent: #4F6F52;
+            /* hijau tenang - hemat */
+            --accent-soft: #E7EFE8;
+            --warn: #C9A227;
+            /* kuning kunyit - 80% */
+            --warn-soft: #FBF6E3;
+            --alert: #C9722E;
+            /* oranye - 90% */
+            --alert-soft: #FBEDE3;
+            --danger: #B5544A;
+            /* merah - 100%+ */
+            --danger-soft: #FBE8E5;
+            --radius: 14px;
+            --gap: 16px;
+            font-size: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.45;
+            padding-bottom: 84px;
+            /* ruang untuk bottom nav app */
+        }
+
+        /* ============ HEADER ============ */
+        header.page-head {
+            padding: 20px 20px 4px;
+        }
+
+        header.page-head h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        header.page-head p {
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        main {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ============ FILTER BAR ============ */
+        .filter-section {
+            margin-top: 18px;
+        }
+
+        .filter-toggle {
+            display: flex;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .filter-toggle button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 9px 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-soft);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background .15s ease, color .15s ease;
+            font-family: inherit;
+        }
+
+        .filter-toggle button.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .filter-toggle button:focus-visible,
+        button:focus-visible,
+        [tabindex]:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Period navigator (geser bulan/minggu) */
+        .period-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+        }
+
+        .period-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            flex-shrink: 0;
+        }
+
+        .period-nav button:active {
+            background: var(--accent-soft);
+        }
+
+        .period-nav button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .period-label {
+            text-align: center;
+            flex: 1;
+        }
+
+        .period-label .period-main {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .period-label .period-sub {
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            margin-top: 1px;
+        }
+
+        /* tombol custom range - tersembunyi default, muncul saat dipilih */
+        .custom-range {
+            display: none;
+            margin-top: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            gap: 10px;
+        }
+
+        .custom-range.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-range .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .custom-range label {
+            font-size: 0.72rem;
+            color: var(--text-soft);
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .custom-range input[type="date"] {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .custom-range button.apply {
+            margin-top: 2px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* ============ SUMMARY CARDS ============ */
+        .summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: var(--gap);
+        }
+
+        .summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+        }
+
+        .summary-card .label {
+            font-size: 0.72rem;
+            color: var(--text-soft);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .summary-card .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .summary-card.full {
+            grid-column: 1 / -1;
+        }
+
+        .summary-card.full .value {
+            color: var(--accent);
+        }
+
+        .summary-card .value.warn {
+            color: var(--warn);
+        }
+
+        .summary-card .value.tier-alert {
+            color: var(--alert);
+        }
+
+        .summary-card .value.danger {
+            color: var(--danger);
+        }
+
+        /* progress bar sisa budget */
+        .progress-track {
+            margin-top: 10px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 999px;
+            transition: width .4s ease;
+        }
+
+        .progress-fill.warn {
+            background: var(--warn);
+        }
+
+        .progress-fill.tier-alert {
+            background: var(--alert);
+        }
+
+        .progress-fill.danger {
+            background: var(--danger);
+        }
+
+        /* Alert banner */
+        .alert {
+            margin-top: var(--gap);
+            border-radius: var(--radius);
+            padding: 13px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 0.83rem;
+            border: 1px solid transparent;
+        }
+
+        .alert.warn {
+            background: var(--warn-soft);
+            color: #7A5C0E;
+            border-color: #EFE0AE;
+        }
+
+        .alert.tier-alert {
+            background: var(--alert-soft);
+            color: #8A4A1E;
+            border-color: #F1D5BC;
+        }
+
+        .alert.danger {
+            background: var(--danger-soft);
+            color: #8C3B32;
+            border-color: #F3D2CD;
+        }
+
+        .alert svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 1px;
+            font-weight: 700;
+        }
+
+        .alert[hidden] {
+            display: none;
+        }
+
+        /* ============ TAB NAV (Chart / Budget) ============ */
+        .view-tabs {
+            display: flex;
+            gap: 6px;
+            margin-top: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .view-tabs button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 10px 0 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-soft);
+            cursor: pointer;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .view-tabs button.active {
+            color: var(--text);
+        }
+
+        .view-tabs button.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* ============ CHART VIEW ============ */
+        .view-panel {
+            margin-top: var(--gap);
+        }
+
+        .view-panel[hidden] {
+            display: none;
+        }
+
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .chart-card+.chart-card {
+            margin-top: 12px;
+        }
+
+        .chart-card h2 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .chart-card .chart-desc {
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            margin-bottom: 12px;
+        }
+
+        .chart-wrap {
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+
+        .chart-wrap.pie {
+            height: 220px;
+        }
+
+        /* legend kategori untuk pie chart */
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .cat-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.7rem;
+        }
+
+        .legend-item .cat-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 0.65rem;
+        }
+
+        .legend-item .name {
+            flex: 1;
+        }
+
+        .legend-item .pct {
+            font-weight: 700;
+            color: var(--text-soft);
+        }
+
+        /* ============ BUDGET VIEW ============ */
+        .budget-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .budget-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+        }
+
+        .budget-item .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .budget-item .cat-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cat-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.7rem;
+        }
+
+        .budget-item .remaining {
+            text-align: right;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .budget-item .remaining .budget-label {
+            font-size: 0.7rem;
+            color: var(--text-soft);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .budget-item .remaining strong {
+            color: var(--text);
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .budget-item .remaining .remaining-sub {
+            font-size: 0.78rem;
+            color: var(--text-soft);
+        }
+
+        .budget-item .progress-track {
+            margin-top: 6px;
+        }
+
+        .budget-item .pct-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+
+        .budget-item .pct-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .budget-item .pct-label.warn {
+            color: var(--warn);
+        }
+
+        .budget-item .pct-label.tier-alert {
+            color: var(--alert);
+        }
+
+        .budget-item .pct-label.danger {
+            color: var(--danger);
+        }
+
+        .budget-item .item-note {
+            margin-top: 8px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .budget-item .item-note.warn {
+            color: var(--warn);
+        }
+
+        .budget-item .item-note.tier-alert {
+            color: var(--alert);
+        }
+
+        .budget-item .item-note.danger {
+            color: var(--danger);
+        }
+
+        .budget-item .item-note[hidden] {
+            display: none;
+        }
+
+        .budget-item .item-note svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        /* ============ RESPONSIVE DESKTOP ============ */
+        @media (min-width:768px) {
+            main {
+                max-width: 920px;
+            }
+
+            .filter-section {
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+            }
+
+            .filter-toggle {
+                max-width: 280px;
+            }
+
+            .period-nav {
+                margin-top: 0;
+                flex: 1;
+            }
+
+            .custom-range {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 340px;
+                z-index: 5;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+            }
+
+            .filter-section {
+                position: relative;
+            }
+
+            .summary {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .summary-card.full {
+                grid-column: auto;
+            }
+
+            .view-panel.charts-grid[data-active="true"] .chart-card-grid {
+                display: grid;
+                grid-template-columns: 1.3fr 1fr;
+                gap: 14px;
+            }
+
+            .chart-card+.chart-card {
+                margin-top: 0;
+            }
+
+            .budget-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+        }
+
+        @media (min-width:1100px) {
+            .budget-list {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="page-head">
+        <h1>Statistik</h1>
+        <p id="periodContext">Ringkasan keuangan kamu</p>
+    </header>
+
+    <main>
+
+        <!-- ============ FILTER ============ -->
+        <section class="filter-section" aria-label="Filter periode">
+            <div class="filter-toggle" role="group" aria-label="Pilih jenis tampilan periode">
+                <button type="button" class="active" data-filter="monthly" aria-pressed="true">Bulanan</button>
+                <button type="button" data-filter="weekly" aria-pressed="false">Mingguan</button>
+                <button type="button" data-filter="custom" aria-pressed="false">Pilih Tanggal</button>
+            </div>
+
+            <div class="period-nav" id="periodNav">
+                <button type="button" id="prevPeriod" aria-label="Periode sebelumnya">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                </button>
+                <div class="period-label">
+                    <div class="period-main" id="periodMain">Juni 2026</div>
+                    <div class="period-sub" id="periodSub">1 – 30 Jun</div>
+                </div>
+                <button type="button" id="nextPeriod" aria-label="Periode berikutnya">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="custom-range" id="customRange">
+                <div class="row">
+                    <div style="flex:1">
+                        <label for="dateFrom">Dari</label>
+                        <input type="date" id="dateFrom" value="2026-06-01">
+                    </div>
+                    <div style="flex:1">
+                        <label for="dateTo">Sampai</label>
+                        <input type="date" id="dateTo" value="2026-06-13">
+                    </div>
+                </div>
+                <button type="button" class="apply" id="applyRange">Terapkan rentang</button>
+            </div>
+        </section>
+
+        <!-- ============ SUMMARY ============ -->
+        <section class="summary" aria-label="Ringkasan budget">
+            <div class="summary-card">
+                <div class="label">Total Budget</div>
+                <div class="value" id="totalBudget">Rp 2.500.000</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Total Terpakai</div>
+                <div class="value" id="totalUsed">Rp 1.840.000</div>
+            </div>
+            <div class="summary-card full">
+                <div class="label">Sisa Budget</div>
+                <div class="value" id="totalRemaining">Rp 660.000</div>
+                <div class="progress-track">
+                    <div class="progress-fill warn" id="totalProgress" style="width:74%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ALERT ============ -->
+        <div class="alert warn" id="budgetAlert" role="status">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <div>
+                <strong>Budget hampir habis</strong>
+                <span id="alertText">Kamu sudah memakai 74% dari total budget bulan ini. Sisa Rp 660.000 untuk 17 hari
+                    ke depan.</span>
+            </div>
+        </div>
+
+        <!-- ============ VIEW TABS ============ -->
+        <div class="view-tabs" role="tablist" aria-label="Tampilan statistik">
+            <button type="button" class="active" role="tab" aria-selected="true" id="tabChart"
+                data-view="chart">Chart</button>
+            <button type="button" role="tab" aria-selected="false" id="tabBudget" data-view="budget">Budget</button>
+        </div>
+
+        <!-- ============ CHART VIEW ============ -->
+        <section class="view-panel" id="panelChart" role="tabpanel" aria-labelledby="tabChart">
+            <div class="chart-card-grid">
+                <div class="chart-card">
+                    <h2>Pengeluaran per Minggu</h2>
+                    <p class="chart-desc" id="barDesc">Total pengeluaran tiap minggu di Juni 2026</p>
+                    <div class="chart-wrap">
+                        <canvas id="barChart" role="img" aria-label="Grafik batang pengeluaran per minggu"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h2>Pengeluaran per Kategori</h2>
+                    <p class="chart-desc">Persentase pengeluaran berdasarkan kategori</p>
+                    <div class="chart-wrap pie">
+                        <canvas id="pieChart" role="img"
+                            aria-label="Grafik lingkaran persentase pengeluaran per kategori"></canvas>
+                    </div>
+                    <div class="legend-list" id="pieLegend"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ BUDGET VIEW ============ -->
+        <section class="view-panel" id="panelBudget" role="tabpanel" aria-labelledby="tabBudget" hidden>
+            <div class="budget-list" id="budgetList"></div>
+        </section>
+
+    </main>
+
+    <script>
+        /* =========================================================
+           STATE
+        ========================================================= */
+        const state = {
+            filter: 'monthly',     // monthly | weekly | custom
+            monthIndex: 5,         // 0-11, Juni = 5
+            year: 2026,
+            weekOffset: 0,         // 0 = minggu ini
+            view: 'chart'          // chart | budget
+        };
+
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        /* Dummy dataset: setiap entri merepresentasikan data per periode.
+           Dalam implementasi nyata, ini diganti fetch ke backend. */
+        const dataset = {
+            monthly: {
+                5: { // Juni 2026
+                    totalBudget: 2500000,
+                    totalUsed: 2010000,
+                    weeklyExpense: [320000, 410000, 560000, 550000],
+                    categories: [
+                        { name: 'Makanan', value: 760000, color: '#4F6F52', budget: 900000, icon: 'ti-tools-kitchen-2' },   // 84% - kuning kunyit
+                        { name: 'Transportasi', value: 370000, color: '#C97B4A', budget: 400000, icon: 'ti-car' },          // 93% - oranye
+                        { name: 'Hiburan', value: 300000, color: '#7A8FAE', budget: 300000, icon: 'ti-movie' },             // 100% - merah (habis)
+                        { name: 'Belanja', value: 420000, color: '#B5544A', budget: 350000, icon: 'ti-shopping-bag' },      // 120% - merah (melebihi)
+                        { name: 'Lainnya', value: 160000, color: '#C9B458', budget: 550000, icon: 'ti-dots' },               // 29% - normal
+                    ]
+                },
+                4: { // Mei 2026
+                    totalBudget: 2500000, totalUsed: 2350000,
+                    weeklyExpense: [600000, 590000, 610000, 550000],
+                    categories: [
+                        { name: 'Makanan', value: 900000, color: '#4F6F52', budget: 900000, icon: 'ti-tools-kitchen-2' },
+                        { name: 'Transportasi', value: 420000, color: '#C97B4A', budget: 400000, icon: 'ti-car' },
+                        { name: 'Hiburan', value: 310000, color: '#7A8FAE', budget: 300000, icon: 'ti-movie' },
+                        { name: 'Belanja', value: 420000, color: '#B5544A', budget: 350000, icon: 'ti-shopping-bag' },
+                        { name: 'Lainnya', value: 300000, color: '#C9B458', budget: 550000, icon: 'ti-dots' },
+                    ]
+                }
+            },
+            weekly: {
+                0: {
+                    totalBudget: 625000, totalUsed: 410000,
+                    dailyExpense: [40000, 60000, 55000, 80000, 90000, 45000, 40000],
+                    categories: [
+                        { name: 'Makanan', value: 190000, color: '#4F6F52', budget: 225000, icon: 'ti-tools-kitchen-2' },
+                        { name: 'Transportasi', value: 85000, color: '#C97B4A', budget: 100000, icon: 'ti-car' },
+                        { name: 'Hiburan', value: 70000, color: '#7A8FAE', budget: 75000, icon: 'ti-movie' },
+                        { name: 'Belanja', value: 45000, color: '#B5544A', budget: 87500, icon: 'ti-shopping-bag' },
+                        { name: 'Lainnya', value: 20000, color: '#C9B458', budget: 137500, icon: 'ti-dots' },
+                    ]
+                },
+                "-1": {
+                    totalBudget: 625000, totalUsed: 598000,
+                    dailyExpense: [100000, 90000, 88000, 95000, 100000, 70000, 55000],
+                    categories: [
+                        { name: 'Makanan', value: 240000, color: '#4F6F52', budget: 225000, icon: 'ti-tools-kitchen-2' },
+                        { name: 'Transportasi', value: 100000, color: '#C97B4A', budget: 100000, icon: 'ti-car' },
+                        { name: 'Hiburan', value: 78000, color: '#7A8FAE', budget: 75000, icon: 'ti-movie' },
+                        { name: 'Belanja', value: 120000, color: '#B5544A', budget: 87500, icon: 'ti-shopping-bag' },
+                        { name: 'Lainnya', value: 60000, color: '#C9B458', budget: 137500, icon: 'ti-dots' },
+                    ]
+                }
+            },
+            custom: {
+                totalBudget: 1200000, totalUsed: 430000,
+                weeklyExpense: [150000, 280000],
+                categories: [
+                    { name: 'Makanan', value: 200000, color: '#4F6F52', budget: 600000, icon: 'ti-tools-kitchen-2' },
+                    { name: 'Transportasi', value: 90000, color: '#C97B4A', budget: 200000, icon: 'ti-car' },
+                    { name: 'Hiburan', value: 70000, color: '#7A8FAE', budget: 150000, icon: 'ti-movie' },
+                    { name: 'Belanja', value: 50000, color: '#B5544A', budget: 150000, icon: 'ti-shopping-bag' },
+                    { name: 'Lainnya', value: 20000, color: '#C9B458', budget: 100000, icon: 'ti-dots' },
+                ]
+            }
+        };
+
+        /* =========================================================
+           HELPERS
+        ========================================================= */
+        const rupiah = n => (n < 0 ? '-Rp ' + Math.abs(n).toLocaleString('id-ID') : 'Rp ' + n.toLocaleString('id-ID'));
+
+        /* Status peringatan budget berdasarkan persentase pemakaian:
+           < 80%  -> normal (hijau)
+           80-89% -> warn (kuning kunyit)
+           90-99% -> alert (oranye)
+           >=100% -> danger (merah, termasuk melebihi budget) */
+        function getBudgetStatus(used, budget) {
+            const pct = budget > 0 ? (used / budget) * 100 : 0;
+            const remaining = budget - used;
+            let level = 'normal';
+            if (pct >= 100) level = 'danger';
+            else if (pct >= 90) level = 'alert';
+            else if (pct >= 80) level = 'warn';
+            return { pct: Math.min(100, Math.round(pct)), rawPct: pct, remaining, level };
+        }
+        function levelClass(level) {
+            return level === 'alert' ? 'tier-alert' : level;
+        }
+
+
+        function getActiveData() {
+            if (state.filter === 'monthly') return dataset.monthly[state.monthIndex] || dataset.monthly[5];
+            if (state.filter === 'weekly') return dataset.weekly[state.weekOffset] || dataset.weekly[0];
+            return dataset.custom;
+        }
+
+        /* =========================================================
+           FILTER TOGGLE
+        ========================================================= */
+        const filterButtons = document.querySelectorAll('.filter-toggle button');
+        const customRange = document.getElementById('customRange');
+        const periodNav = document.getElementById('periodNav');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+
+                state.filter = btn.dataset.filter;
+
+                if (state.filter === 'custom') {
+                    customRange.classList.add('show');
+                    periodNav.style.display = 'none';
+                } else {
+                    customRange.classList.remove('show');
+                    periodNav.style.display = 'flex';
+                }
+                updatePeriodLabel();
+                renderAll();
+            });
+        });
+
+        document.getElementById('applyRange').addEventListener('click', () => {
+            const from = document.getElementById('dateFrom').value;
+            const to = document.getElementById('dateTo').value;
+            document.getElementById('periodContext').textContent = `Rentang kustom: ${formatDateID(from)} – ${formatDateID(to)}`;
+            renderAll();
+        });
+
+        function formatDateID(isoStr) {
+            if (!isoStr) return '';
+            const d = new Date(isoStr);
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        /* =========================================================
+           PERIOD NAVIGATOR (geser bulan / minggu)
+        ========================================================= */
+        document.getElementById('prevPeriod').addEventListener('click', () => shiftPeriod(-1));
+        document.getElementById('nextPeriod').addEventListener('click', () => shiftPeriod(1));
+
+        function shiftPeriod(dir) {
+            if (state.filter === 'monthly') {
+                state.monthIndex += dir;
+                if (state.monthIndex < 0) { state.monthIndex = 11; state.year--; }
+                if (state.monthIndex > 11) { state.monthIndex = 0; state.year++; }
+            } else if (state.filter === 'weekly') {
+                state.weekOffset += dir;
+            }
+            updatePeriodLabel();
+            renderAll();
+        }
+
+        function updatePeriodLabel() {
+            const main = document.getElementById('periodMain');
+            const sub = document.getElementById('periodSub');
+            const ctx = document.getElementById('periodContext');
+
+            if (state.filter === 'monthly') {
+                main.textContent = `${monthNames[state.monthIndex]} ${state.year}`;
+                const daysInMonth = new Date(state.year, state.monthIndex + 1, 0).getDate();
+                sub.textContent = `1 – ${daysInMonth} ${monthNames[state.monthIndex].slice(0, 3)}`;
+                ctx.textContent = `Ringkasan untuk ${monthNames[state.monthIndex]} ${state.year}`;
+            } else if (state.filter === 'weekly') {
+                const labels = { 0: 'Minggu ini', '-1': '1 minggu lalu', '-2': '2 minggu lalu' };
+                main.textContent = labels[state.weekOffset] !== undefined ? labels[state.weekOffset] : `Minggu ${state.weekOffset > 0 ? '+' : ''}${state.weekOffset}`;
+                sub.textContent = state.weekOffset === 0 ? '9 – 15 Jun' : (state.weekOffset === -1 ? '2 – 8 Jun' : '');
+                ctx.textContent = `Ringkasan untuk ${main.textContent.toLowerCase()}`;
+            } else {
+                ctx.textContent = 'Ringkasan rentang kustom';
+            }
+        }
+
+        /* =========================================================
+           VIEW TABS (Chart / Budget)
+        ========================================================= */
+        const tabChart = document.getElementById('tabChart');
+        const tabBudget = document.getElementById('tabBudget');
+        const panelChart = document.getElementById('panelChart');
+        const panelBudget = document.getElementById('panelBudget');
+
+        tabChart.addEventListener('click', () => switchView('chart'));
+        tabBudget.addEventListener('click', () => switchView('budget'));
+
+        function switchView(view) {
+            state.view = view;
+            const isChart = view === 'chart';
+
+            tabChart.classList.toggle('active', isChart);
+            tabChart.setAttribute('aria-selected', isChart);
+            tabBudget.classList.toggle('active', !isChart);
+            tabBudget.setAttribute('aria-selected', !isChart);
+
+            panelChart.hidden = !isChart;
+            panelBudget.hidden = isChart;
+        }
+
+        /* =========================================================
+           RENDER: SUMMARY + ALERT
+        ========================================================= */
+        function renderSummary() {
+            const d = getActiveData();
+            const status = getBudgetStatus(d.totalUsed, d.totalBudget);
+            const { pct, remaining, level } = status;
+
+            document.getElementById('totalBudget').textContent = rupiah(d.totalBudget);
+            document.getElementById('totalUsed').textContent = rupiah(d.totalUsed);
+
+            const remEl = document.getElementById('totalRemaining');
+            remEl.textContent = rupiah(remaining);
+            remEl.classList.remove('warn', 'tier-alert', 'danger');
+            if (level !== 'normal') remEl.classList.add(levelClass(level));
+
+            const fill = document.getElementById('totalProgress');
+            fill.style.width = pct + '%';
+            fill.classList.remove('warn', 'tier-alert', 'danger');
+            if (level !== 'normal') fill.classList.add(levelClass(level));
+
+            const alertBox = document.getElementById('budgetAlert');
+            const alertText = document.getElementById('alertText');
+            const alertTitle = alertBox.querySelector('strong');
+
+            if (level === 'danger') {
+                alertBox.hidden = false;
+                alertBox.className = 'alert danger';
+                if (remaining < 0) {
+                    alertTitle.textContent = 'Budget terlampaui';
+                    alertText.textContent = `Pengeluaran sudah melebihi budget sebesar ${rupiah(Math.abs(remaining))}. Coba kurangi pengeluaran di sisa periode ini.`;
+                } else {
+                    alertTitle.textContent = 'Budget habis';
+                    alertText.textContent = `Seluruh budget sudah terpakai (100%). Sisa ${rupiah(remaining)} untuk sisa periode ini.`;
+                }
+            } else if (level === 'alert') {
+                alertBox.hidden = false;
+                alertBox.className = 'alert tier-alert';
+                alertTitle.textContent = 'Budget hampir habis';
+                alertText.textContent = `Kamu sudah memakai ${pct}% dari total budget. Sisa ${rupiah(remaining)}, hati-hati pengeluaran selanjutnya.`;
+            } else if (level === 'warn') {
+                alertBox.hidden = false;
+                alertBox.className = 'alert warn';
+                alertTitle.textContent = 'Budget mulai menipis';
+                alertText.textContent = `Kamu sudah memakai ${pct}% dari total budget. Sisa ${rupiah(remaining)}.`;
+            } else {
+                alertBox.hidden = true;
+            }
+        }
+
+        /* =========================================================
+           RENDER: CHARTS
+        ========================================================= */
+        let barChartInstance, pieChartInstance;
+
+        /* Ikon kategori (sederhana, mengikuti gaya outline 24x24) */
+        const categoryIconPaths = {
+            'ti-tools-kitchen-2': '<path d="M3 3v7c0 1.1.9 2 2 2h2V3"/><path d="M5 3v18"/><path d="M19 3a4 4 0 0 0-4 4v5h4"/><path d="M17 12v9"/>',
+            'ti-car': '<path d="M5 17h-2v-6l2 -5h11l2 5h1a2 2 0 0 1 2 2v4h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
+            'ti-movie': '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5l3 4M14 5l3 4"/>',
+            'ti-shopping-bag': '<path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+            'ti-dots': '<circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>'
+        };
+
+        /* SVG inline ikon kategori untuk elemen HTML (legend, budget list) */
+        function categoryIconSVG(iconKey, color) {
+            const path = categoryIconPaths[iconKey] || categoryIconPaths['ti-dots'];
+            return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+        }
+
+        /* cache <img> dari SVG, untuk digambar di canvas */
+        const iconImageCache = {};
+        function getIconImage(iconKey, color) {
+            const cacheKey = iconKey + color;
+            if (iconImageCache[cacheKey]) return iconImageCache[cacheKey];
+            const path = categoryIconPaths[iconKey] || categoryIconPaths['ti-dots'];
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+            const img = new Image();
+            img.src = 'data:image/svg+xml;base64,' + btoa(svg);
+            iconImageCache[cacheKey] = img;
+            return img;
+        }
+
+        /* Plugin Chart.js: gambar lingkaran putih + ikon kategori di tengah tiap slice pie */
+        const pieIconPlugin = {
+            id: 'pieIcons',
+            afterDraw(chart) {
+                if (chart.config.type !== 'doughnut') return;
+                const { ctx } = chart;
+                const meta = chart.getDatasetMeta(0);
+                const categories = chart.config._categories || [];
+
+                meta.data.forEach((arc, i) => {
+                    const cat = categories[i];
+                    if (!cat) return;
+
+                    const angle = (arc.startAngle + arc.endAngle) / 2;
+                    const radius = (arc.innerRadius + arc.outerRadius) / 2;
+                    const x = arc.x + Math.cos(angle) * radius;
+                    const y = arc.y + Math.sin(angle) * radius;
+
+                    const badgeR = 11;
+                    const img = getIconImage(cat.icon, cat.color);
+
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(x, y, badgeR, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fill();
+
+                    if (img.complete) {
+                        ctx.drawImage(img, x - 8, y - 8, 16, 16);
+                    } else {
+                        img.onload = () => chart.draw();
+                    }
+                    ctx.restore();
+                });
+            }
+        };
+        Chart.register(pieIconPlugin);
+
+
+        function renderCharts() {
+            const d = getActiveData();
+            const ctxBar = document.getElementById('barChart');
+            const ctxPie = document.getElementById('pieChart');
+            const barDesc = document.getElementById('barDesc');
+
+            let barLabels, barData;
+            if (state.filter === 'weekly') {
+                barLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+                barData = d.dailyExpense;
+                barDesc.textContent = 'Total pengeluaran tiap hari minggu ini';
+            } else if (state.filter === 'monthly') {
+                barLabels = d.weeklyExpense.map((_, i) => `Minggu ${i + 1}`);
+                barData = d.weeklyExpense;
+                barDesc.textContent = `Total pengeluaran tiap minggu di ${monthNames[state.monthIndex]} ${state.year}`;
+            } else {
+                barLabels = d.weeklyExpense.map((_, i) => `Minggu ${i + 1}`);
+                barData = d.weeklyExpense;
+                barDesc.textContent = 'Total pengeluaran per minggu pada rentang terpilih';
+            }
+
+            const sharedFont = { family: "Inter, sans-serif", size: 11 };
+
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: barLabels,
+                    datasets: [{
+                        data: barData,
+                        backgroundColor: '#4F6F52',
+                        borderRadius: 6,
+                        maxBarThickness: 36
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => rupiah(ctx.parsed.y)
+                            },
+                            backgroundColor: '#2B2B28',
+                            padding: 8,
+                            titleFont: sharedFont,
+                            bodyFont: sharedFont
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: v => 'Rp ' + (v / 1000) + 'rb',
+                                font: sharedFont,
+                                color: '#8A8782'
+                            },
+                            grid: { color: '#EFEDE9' }
+                        },
+                        x: {
+                            ticks: { font: sharedFont, color: '#8A8782' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            if (pieChartInstance) pieChartInstance.destroy();
+            pieChartInstance = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: d.categories.map(c => c.name),
+                    datasets: [{
+                        data: d.categories.map(c => c.value),
+                        backgroundColor: d.categories.map(c => c.color),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    layout: { padding: 6 },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.label}: ${rupiah(ctx.parsed)}`
+                            },
+                            backgroundColor: '#2B2B28',
+                            padding: 8,
+                            titleFont: sharedFont,
+                            bodyFont: sharedFont
+                        }
+                    }
+                }
+            });
+            pieChartInstance.config._categories = d.categories;
+
+            // custom legend dengan ikon dan persentase
+            const total = d.categories.reduce((s, c) => s + c.value, 0);
+            const legend = document.getElementById('pieLegend');
+            legend.innerHTML = d.categories.map(c => {
+                const pct = Math.round((c.value / total) * 100);
+                return `<div class="legend-item">
+      <span class="cat-icon" style="background:${c.color}22; color:${c.color}">${categoryIconSVG(c.icon, c.color)}</span>
+      <span class="name">${c.name}</span>
+      <span class="pct">${pct}%</span>
+    </div>`;
+            }).join('');
+        }
+
+        /* =========================================================
+           RENDER: BUDGET VIEW
+        ========================================================= */
+        function renderBudget() {
+            const d = getActiveData();
+            const list = document.getElementById('budgetList');
+
+            const warnIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+            const dangerIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+            list.innerHTML = d.categories.map(c => {
+                const { pct, rawPct, remaining, level } = getBudgetStatus(c.value, c.budget);
+                const displayPct = Math.round(rawPct);
+                let note = '';
+
+                if (level === 'danger') {
+                    note = remaining < 0
+                        ? `<div class="item-note danger">${dangerIcon}Melebihi budget</div>`
+                        : `<div class="item-note danger">${dangerIcon}Budget habis</div>`;
+                } else if (level === 'alert') {
+                    note = `<div class="item-note tier-alert">${warnIcon}Hampir habis</div>`;
+                } else if (level === 'warn') {
+                    note = `<div class="item-note warn">${warnIcon}Tersisa sedikit</div>`;
+                }
+
+                return `<div class="budget-item">
+      <div class="top-row">
+        <div class="cat-name">
+        <span class="cat-dot" style="background:${c.color}22; color:${c.color}">${categoryIconSVG(c.icon, c.color)}</span>
+          ${c.name}
+        </div>
+        <div class="remaining">
+          <span class="budget-label">Budget</span>
+          <strong>${rupiah(c.budget)}</strong>
+          <span class="remaining-sub">Sisa ${rupiah(remaining)}</span>
+        </div>
+      </div>
+      <div class="pct-row">
+        <span class="pct-label ${level !== 'normal' ? levelClass(level) : ''}">${displayPct}%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill ${level !== 'normal' ? levelClass(level) : ''}" style="width:${pct}%"></div>
+      </div>
+      ${note}
+    </div>`;
+            }).join('');
+        }
+
+        /* =========================================================
+           MAIN RENDER
+        ========================================================= */
+        function renderAll() {
+            renderSummary();
+            renderCharts();
+            renderBudget();
+        }
+
+        updatePeriodLabel();
+        renderAll();
+    </script>
+</body>
+
+</html>

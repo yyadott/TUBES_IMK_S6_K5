@@ -11,56 +11,50 @@
   .app { width:100%; max-width:380px; min-height:100vh; background:#f4f5f7; position:relative; padding-bottom:80px; }
 
   /* Header */
-  .header { display:flex; align-items:center; gap:12px; padding:20px 16px 16px; }
-  .header img { width:44px; height:44px; border-radius:50%; object-fit:cover; }
-  .header span { font-size:13px; color:#888; }
-  .header b { display:block; font-size:15px; color:#222; }
+  .header { display:flex; align-items:center; gap:10px; padding:20px 16px 14px; }
+  .header img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
+  .header span { font-size:12px; color:#888; }
+  .header b { display:block; font-size:14px; color:#222; }
 
   /* Summary Card */
-  .summary-card { background:#2e3a59; color:#fff; border-radius:16px; margin:0 16px; padding:18px; }
-  .summary-card .label { font-size:12px; color:#cfd3dd; margin-bottom:4px; }
-  .summary-card .amount { font-size:26px; font-weight:700; margin-bottom:16px; }
-  .summary-row { display:flex; gap:10px; }
-  .summary-box { flex:1; background:rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; }
-  .summary-box small { display:block; font-size:11px; color:#cfd3dd; margin-bottom:2px; }
-  .summary-box b { font-size:14px; }
+  .summary-card { background:#2e3a59; color:#fff; border-radius:16px; margin:0 16px 20px; padding:18px; }
+  .summary-card .label { font-size:11px; color:#cfd3dd; margin-bottom:6px; }
+  .summary-card .amount { font-size:28px; font-weight:700; }
 
-  /* Section title */
-  .section { margin:22px 16px 10px; display:flex; justify-content:space-between; align-items:center; }
-  .section h3 { font-size:14px; font-weight:600; color:#222; }
-  .section a { font-size:12px; color:#5b7fff; text-decoration:none; font-weight:500; }
+  /* Date nav */
+  .date-bar { display:flex; align-items:center; justify-content:space-between; padding:0 16px; margin-bottom:12px; }
+  .date-bar span { font-size:13px; font-weight:600; color:#222; }
+  .date-nav { display:flex; align-items:center; gap:6px; }
+  .date-nav button { background:#fff; border:none; border-radius:8px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+  .date-nav button svg { width:14px; height:14px; stroke:#555; }
+  .date-nav .date-label { font-size:12px; color:#555; background:#fff; border-radius:8px; padding:5px 10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); min-width:72px; text-align:center; }
 
   /* Transaction list */
   .list { margin:0 16px; display:flex; flex-direction:column; gap:8px; }
-  .item { background:#fff; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:space-between; }
+  .item { background:#fff; border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; }
   .item-left { display:flex; align-items:center; gap:12px; }
   .item-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .item-icon.cash { background:#fff4d9; }
-  .item-icon.bca { background:#e2eaff; }
-  .item-icon.dana { background:#dff3ff; }
   .item-icon svg { width:18px; height:18px; }
+  .item-icon.makan      { background:#fff4d9; }
+  .item-icon.transport  { background:#e8f4ff; }
+  .item-icon.belanja    { background:#ffeee8; }
+  .item-icon.tagihan    { background:#f0eeff; }
+  .item-icon.main       { background:#e8fff3; }
   .item-name { font-size:13px; font-weight:600; color:#222; }
-  .item-sub { font-size:11px; color:#999; margin-top:2px; }
+  .item-sub  { font-size:11px; color:#aaa; margin-top:1px; }
   .item-amount { font-size:13px; font-weight:600; color:#e6593c; }
 
-  /* Saldo grid */
-  .saldo-grid { margin:0 16px; display:flex; gap:8px; }
-  .saldo-box { flex:1; background:#fff; border-radius:12px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; }
-  .saldo-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; }
-  .saldo-icon.bca { background:#e2eaff; }
-  .saldo-icon.dana { background:#dff3ff; }
-  .saldo-icon.cash { background:#fff4d9; }
-  .saldo-icon svg { width:16px; height:16px; }
-  .saldo-box small { font-size:10px; color:#999; }
-  .saldo-box b { font-size:12px; color:#222; }
+  /* Empty state */
+  .empty { text-align:center; padding:50px 16px; color:#bbb; font-size:13px; }
+  .empty svg { width:40px; height:40px; stroke:#ddd; margin-bottom:10px; display:block; margin-inline:auto; }
 
   /* Bottom nav */
-  .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:380px; background:#fff; display:flex; justify-content:space-around; align-items:center; padding:10px 0 14px; box-shadow:0 -2px 10px rgba(0,0,0,0.05); border-radius:18px 18px 0 0; }
-  .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:3px; color:#b3b6c0; text-decoration:none; font-size:10px; }
-  .bottom-nav a.active { color:#5b7fff; }
+  .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:380px; background:#fff; display:flex; justify-content:space-around; align-items:center; padding:10px 0 16px; box-shadow:0 -2px 10px rgba(0,0,0,0.06); border-radius:18px 18px 0 0; }
+  .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:3px; color:#c0c3cc; text-decoration:none; font-size:10px; font-weight:500; }
+  .bottom-nav a.active { color:#2e3a59; }
   .bottom-nav a svg { width:22px; height:22px; }
-  .nav-fab { background:#5b7fff; color:#fff !important; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:-26px; box-shadow:0 4px 10px rgba(91,127,255,0.4); }
-  .nav-fab svg { width:24px; height:24px; }
+  .nav-fab { background:#2e3a59 !important; color:#fff !important; width:48px; height:48px; border-radius:50%; display:flex !important; align-items:center; justify-content:center; margin-top:-22px; box-shadow:0 4px 12px rgba(46,58,89,0.35); }
+  .nav-fab svg { width:22px; height:22px; stroke:#fff !important; }
   .nav-fab span { display:none; }
 </style>
 </head>
@@ -78,90 +72,61 @@
 
   <!-- Summary Card -->
   <div class="summary-card">
-    <div class="label">Pengeluaran Juni 2026</div>
-    <div class="amount">RP25.000</div>
-    <div class="summary-row">
-      <div class="summary-box">
-        <small>Total Saldo</small>
-        <b>RP1.000.000</b>
-      </div>
-      <div class="summary-box">
-        <small>Sisa Anggaran</small>
-        <b>RP750.000</b>
-      </div>
+    <div class="label">Total pengeluaran hari ini</div>
+    <div class="amount">Rp155.000</div>
+  </div>
+
+  <!-- Date nav -->
+  <div class="date-bar">
+    <span>Transaksi Harian</span>
+    <div class="date-nav">
+      <button onclick="changeDay(-1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="date-label" id="date-label">Hari ini</span>
+      <button onclick="changeDay(1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
-  <!-- Transaksi Terbaru -->
-  <div class="section">
-    <h3>Transaksi Terbaru</h3>
-    <a href="#">Lihat Semua</a>
-  </div>
+  <!-- List transaksi -->
   <div class="list">
     <div class="item">
       <div class="item-left">
-        <div class="item-icon cash">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#e0a800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+        <div class="item-icon makan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e0a800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M3 11a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         </div>
         <div>
-          <div class="item-name">Cash</div>
-          <div class="item-sub">Hari ini · Print</div>
+          <div class="item-name">Makan</div>
+          <div class="item-sub">08.30</div>
         </div>
       </div>
-      <div class="item-amount">- RP25.000</div>
+      <div class="item-amount">- Rp55.000</div>
     </div>
     <div class="item">
       <div class="item-left">
-        <div class="item-icon bca">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#4a6cf7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
+        <div class="item-icon transport">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a8fe1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2M6 12l1.5-5h9L18 12"/><circle cx="7" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg>
         </div>
         <div>
-          <div class="item-name">BCA</div>
-          <div class="item-sub">Hari ini · Bensin</div>
+          <div class="item-name">Bensin</div>
+          <div class="item-sub">09.15</div>
         </div>
       </div>
-      <div class="item-amount">- RP75.000</div>
+      <div class="item-amount">- Rp75.000</div>
     </div>
     <div class="item">
       <div class="item-left">
-        <div class="item-icon dana">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1ea7e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        <div class="item-icon belanja">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e6593c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         </div>
         <div>
-          <div class="item-name">DANA</div>
-          <div class="item-sub">Hari ini · Makan</div>
+          <div class="item-name">Print</div>
+          <div class="item-sub">13.00</div>
         </div>
       </div>
-      <div class="item-amount">- RP55.000</div>
-    </div>
-  </div>
-
-  <!-- Saldo -->
-  <div class="section">
-    <h3>Saldo</h3>
-    <a href="#">Lihat Semua</a>
-  </div>
-  <div class="saldo-grid">
-    <div class="saldo-box">
-      <div class="saldo-icon bca">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#4a6cf7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
-      </div>
-      <small>BCA</small>
-      <b>RP275.000</b>
-    </div>
-    <div class="saldo-box">
-      <div class="saldo-icon dana">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#1ea7e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-      </div>
-      <small>DANA</small>
-      <b>RP170.000</b>
-    </div>
-    <div class="saldo-box">
-      <div class="saldo-icon cash">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#e0a800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
-      </div>
-      <small>Cash</small>
-      <b>RP120.000</b>
+      <div class="item-amount">- Rp25.000</div>
     </div>
   </div>
 
@@ -176,19 +141,36 @@
       <span>Statistik</span>
     </a>
     <a href="../tambah-anggaran/index.html" class="nav-fab">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Tambah</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </a>
     <a href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       <span>Riwayat</span>
     </a>
     <a href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Setting</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>Profil</span>
     </a>
   </div>
 
 </div>
+<script>
+  const today = new Date();
+  let offset = 0;
+
+  function formatDate(d) {
+    if (offset === 0) return 'Hari ini';
+    if (offset === -1) return 'Kemarin';
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  }
+
+  function changeDay(dir) {
+    if (offset === 0 && dir === 1) return; // ga bisa ke masa depan
+    offset += dir;
+    const d = new Date(today);
+    d.setDate(d.getDate() + offset);
+    document.getElementById('date-label').textContent = formatDate(d);
+  }
+</script>
 </body>
 </html>

@@ -1,0 +1,157 @@
+/* Core Styling Base */
+body {
+    background-color: #f8fafc;
+    color: #334155;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.main-app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    padding-bottom: 90px;
+}
+
+.header-title {
+    font-weight: 800; 
+    font-size: 2rem; 
+    color: #0f172a;
+}
+
+.profile-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #6366f1;
+}
+
+/* Banner Total Plafon Dashboard */
+.total-budget-card {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    color: white;
+    border-radius: 24px;
+    padding: 24px;
+}
+
+.tracking-header {
+    letter-spacing: 0.5px;
+}
+
+.display-plafon {
+    font-size: 2.1rem;
+}
+
+/* Button Input Controller */
+.btn-add-budget {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+    border: none;
+    border-radius: 16px;
+    padding: 14px;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.btn-add-budget:hover {
+    background-color: #c7d2fe;
+    color: #4338ca;
+}
+
+.section-headline {
+    color: #0f172a; 
+    font-size: 1.1rem;
+}
+
+/* Structural Budget Card Output Component */
+.budget-card {
+    background-color: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Efek Buram / Pembekuan visual kartu pengawas */
+.budget-card.disabled-category {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    opacity: 0.65;
+}
+
+.icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.progress-custom {
+    height: 8px;
+    background-color: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Fixed Bottom Bar Navigation UI */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid #f1f5f9;
+    z-index: 100;
+}
+
+.nav-item-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.nav-item-box i {
+    font-size: 1.3rem;
+    margin-bottom: 2px;
+}
+
+.nav-item-box.active {
+    color: #4f46e5;
+}
+
+/* Action Trigger Button (Trash & Switch) */
+.btn-action-budget {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px;
+    color: #94a3b8;
+    transition: color 0.2s;
+}
+
+.btn-action-budget.delete:hover { 
+    color: #ef4444; 
+}
+
+.btn-action-budget.toggle:hover { 
+    color: #0ea5e9; 
+}

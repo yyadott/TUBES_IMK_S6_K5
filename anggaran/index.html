@@ -1,163 +1,744 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Anggaran - Book Market</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/style.css">
-    <style>
-        /* Style kustom tambahan untuk tombol hapus anggaran */
-        .wrapper-anggaran-kustom {
-            position: relative;
-        }
-        .btn-hapus-anggaran {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: transparent;
-            border: none;
-            color: #ef4444;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: transform 0.2s, color 0.2s;
-            z-index: 10;
-        }
-        .btn-hapus-anggaran:hover {
-            transform: scale(1.2);
-            color: #dc2626;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anggaran</title>
+
+<style>
+:root{
+    --bg:#FAFAF8;
+    --surface:#FFFFFF;
+    --border:#E6E4E0;
+
+    --text:#2B2B28;
+    --text-soft:#8A8782;
+
+    --accent:#4F6F52;
+    --accent-soft:#E7EFE8;
+
+    --radius:14px;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+.container{
+    max-width:560px;
+    margin:auto;
+    padding:20px;
+    padding-bottom:120px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.back-btn{
+    font-size:22px;
+    cursor:pointer;
+}
+
+.page-title{
+    font-size:1.4rem;
+    font-weight:700;
+}
+
+.category-btn{
+    border:none;
+    background:none;
+    color:var(--accent);
+    font-weight:600;
+    cursor:pointer;
+}
+
+.budget-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-bottom:20px;
+    cursor:pointer;
+}
+
+.budget-label{
+    font-size:.75rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--text-soft);
+    margin-bottom:6px;
+}
+
+.budget-total{
+    font-size:1.8rem;
+    font-weight:700;
+}
+
+.setting-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.setting-title{
+    font-size:.95rem;
+    font-weight:600;
+}
+
+.switch{
+    position:relative;
+    width:52px;
+    height:28px;
+}
+
+.switch input{
+    display:none;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#d6d4cf;
+    border-radius:999px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.slider:before{
+    content:'';
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    transition:.25s;
+}
+
+input:checked + .slider{
+    background:var(--accent);
+}
+
+input:checked + .slider:before{
+    transform:translateX(24px);
+}
+
+.category-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.category-item{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+}
+
+.category-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.category-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.category-icon svg{
+    width:20px;
+    height:20px;
+}
+
+.category-name{
+    font-weight:600;
+}
+
+.category-value{
+    font-weight:700;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.35);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    z-index:999;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-content{
+    background:white;
+    width:100%;
+    max-width:340px;
+    border-radius:18px;
+    padding:20px;
+}
+
+.modal-title{
+    font-size:1.1rem;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.modal-subtitle{
+    color:var(--text-soft);
+    margin-bottom:16px;
+}
+
+.modal-input{
+    width:100%;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:1rem;
+    margin-bottom:18px;
+}
+
+.modal-actions{
+    display:flex;
+    gap:10px;
+}
+
+.btn{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btn-cancel{
+    background:#f3f3f3;
+}
+
+.btn-save{
+    background:var(--accent);
+    color:white;
+}
+
+/* FOOTER */
+
+.bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    max-width:560px;
+    margin:auto;
+    height:72px;
+    background:white;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    z-index:100;
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    text-decoration:none;
+    color:var(--text-soft);
+    font-size:.68rem;
+}
+
+.nav-item.active{
+    color:var(--accent);
+    font-weight:700;
+}
+
+.nav-add{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:var(--accent);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    margin-top:-35px;
+    text-decoration:none;
+}
+
+.hidden{
+    display:none;
+}
+
+.bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-width: 560px;
+        margin: 0 auto;
+        height: 72px;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-radius: 24px 24px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 8px;
+        z-index: 100;
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        color: var(--text-soft);
+        font-size: 0.68rem;
+        font-weight: 500;
+        min-width: 52px;
+    }
+
+    .nav-item svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .nav-item.active {
+        color: var(--accent);
+        font-weight: 700;
+    }
+
+    .nav-item.active svg {
+        stroke-width: 2.4;
+    }
+
+    /* Floating Add Button */
+    .nav-add {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -36px;
+        box-shadow: 0 8px 20px rgba(79, 111, 82, 0.18);
+        flex-shrink: 0;
+    }
+
+    .nav-add svg {
+        width: 28px;
+        height: 28px;
+        color: #fff;
+    }
+
+    .nav-add:active {
+        transform: scale(.97);
+    }
+
+
+</style>
 </head>
 <body>
 
-    <div class="main-app-container px-4 pt-4">
-        
-        <div class="d-flex justify-content-between align-items-center mb-1">
-            <h1 class="fw-black" style="font-weight: 800; font-size: 2.2rem; color: #0f172a;">Anggaran</h1>
-            <img src="assets/img/yudi.jpg" onerror="this.src='https://via.placeholder.com/150'" class="profile-avatar" alt="Avatar User">
-        </div>
-        <p class="text-muted small mb-4">Kelola pengeluaran bulanan Anda</p>
+<div class="container">
 
-        <div class="mb-5">
-            <a href="/tambah-anggaran/index.html" class="btn btn-add-budget d-flex align-items-center justify-content-center gap-2 shadow-sm text-decoration-none">
-                <i class="bi bi-plus-circle-fill fs-5 text-dark"></i> Tambah Anggaran
-            </a>
+    <div class="header">
+        <div class="header-left">
+            
+            <h1 class="page-title">Anggaran</h1>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold m-0" style="color: #0f172a; font-size: 1.2rem;">Daftar Anggaran</h5>
-            <a href="/daftar-anggaran/index.html" class="text-decoration-none fw-bold" style="color: #5a67d8; font-size: 0.95rem;">Lihat Semua</a>
-        </div>
-
-        <div id="listAnggaranContainer">
-            <!-- Kartu anggaran kustom akan dirender di sini melalui JavaScript -->
-         </div>
-         
-        <div class="bottom-nav">
-            <a href="index.php" class="nav-item-box">
-                <i class="bi bi-grid-fill"></i>Hom
-            </a>
-            <a href="anggaran.html" class="nav-item-box active">
-                <i class="bi bi-wallet2"></i>Bajeut
-                <span class="notification-dot"></span>
-            </a>
-            <a href="statistik.php" class="nav-item-box">
-                <i class="bi bi-bar-chart-line-fill"></i>Statistig
-            </a>
-            <a href="setting.php" class="nav-item-box">
-                <i class="bi bi-sliders"></i>Settig
-            </a>
-        </div>
-        
+        <a href="../tambah-kategori/index.html" class="category-btn">
+            + Tambah Kategori
+        </a>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const listAnggaranContainer = document.getElementById('listAnggaranContainer');
+    <div class="budget-card" id="budgetCard">
+        <div class="budget-label">Total Anggaran</div>
+        <div class="budget-total" id="totalBudget">Rp0</div>
+    </div>
 
-            // 1. FUNGSI UNTUK MERENDER ANGGARAN KUSTOM DARI LOCALSTORAGE
-            function renderAnggaranKustom() {
-                // Bersihkan semua elemen kustom lama agar saat dihapus tidak terjadi penumpukan render ganda
-                const elemenKustomLama = listAnggaranContainer.querySelectorAll('.wrapper-anggaran-kustom');
-                elemenKustomLama.forEach(el => el.remove());
+    <div class="setting-row">
+        <div class="setting-title">Anggaran per kategori</div>
 
-                const anggaranKustomList = JSON.parse(localStorage.getItem('anggaran_kustom')) || [];
-                
-                anggaranKustomList.forEach((item, index) => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'wrapper-anggaran-kustom';
-                    
-                    const formatTarget = new Intl.NumberFormat('id-ID', { 
-                        style: 'currency', 
-                        currency: 'IDR', 
-                        minimumFractionDigits: 0 
-                    }).format(item.target);
+        <label class="switch">
+            <input type="checkbox" id="toggleBudget" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
 
-                    wrapper.innerHTML = `
-                        <button type="button" class="btn-hapus-anggaran" data-index="${index}">
-                            <i class="bi bi-trash3-fill"></i>
-                        </button>
-                        <div class="budget-card">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="icon-box bg-icon-${item.warnaClass}">
-                                        <i class="bi ${item.ikonClass}"></i>
-                                    </div>
-                                    <div style="max-width: 180px;">
-                                        <h6 class="fw-bold mb-1 text-truncate" style="font-size: 1.05rem;">${item.nama}</h6>
-                                        <span class="text-muted small d-block" style="font-size: 0.8rem;">Kategori: ${item.kategori}</span>
-                                    </div>
-                                </div>
-                                <div class="text-end" style="padding-right: 25px;">
-                                    <span class="fw-bold d-block text-success" style="font-size: 0.95rem;">Sisa ${formatTarget}</span>
-                                </div>
-                            </div>
-                            <div class="progress progress-custom mb-2">
-                                <div class="progress-bar" role="progressbar" style="width: 0%; background-color: #27ae60;"></div>
-                            </div>
-                            <div class="d-flex justify-content-between text-muted" style="font-size: 0.75rem; font-weight: 600;">
-                                <span>Rp 0</span>
-                                <span>Target: ${formatTarget}</span>
-                            </div>
-                        </div>
-                    `;
-                    
-                    listAnggaranContainer.appendChild(wrapper);
-                });
+    <div class="category-list" id="categoryList"></div>
 
-                // Pasang event listener ke semua tombol hapus setelah kartu berhasil dibuat
-                daftarkanEventHapusAnggaran();
-            }
+</div>
 
-            // 2. FUNGSI LOGIKA EKSEKUSI PENGHAPUSAN DATA ANGGARAN
-            function daftarkanEventHapusAnggaran() {
-                const tombolHapus = document.querySelectorAll('.btn-hapus-anggaran');
-                tombolHapus.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        if (confirm("Apakah Anda yakin ingin menghapus anggaran belanja ini?")) {
-                            const indexHapus = parseInt(this.getAttribute('data-index'));
-                            let anggaranKustomList = JSON.parse(localStorage.getItem('anggaran_kustom')) || [];
-                            
-                            // Hapus target baris item dari array berdasarkan indexnya
-                            anggaranKustomList.splice(indexHapus, 1);
-                            
-                            // Simpan kembali array yang sudah diperbarui ke memori browser
-                            localStorage.setItem('anggaran_kustom', JSON.stringify(anggaranKustomList));
-                            
-                            // Segarkan ulang visual komponen card di layar
-                            renderAnggaranKustom();
-                        }
-                    });
-                });
-            }
+<!-- MODAL -->
 
-            // Jalankan fungsi pemuatan list anggaran saat halaman pertama kali dibuka
-            renderAnggaranKustom();
+<div class="modal" id="modal">
+    <div class="modal-content">
+
+        <div class="modal-title" id="modalTitle">
+            Atur Anggaran
+        </div>
+
+        <div class="modal-subtitle" id="modalSubtitle">
+            Belanja
+        </div>
+
+        <input
+            type="number"
+            id="budgetInput"
+            class="modal-input"
+            placeholder="Masukkan nominal">
+
+        <div class="modal-actions">
+            <button class="btn btn-cancel" id="cancelBtn">
+                Batal
+            </button>
+
+            <button class="btn btn-save" id="saveBtn">
+                Simpan
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<nav class="bottom-nav">
+
+    <!-- Home -->
+    <a href="../home/home.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M3 10.5L12 3l9 7.5"></path>
+        <path d="M5 9.5V21h14V9.5"></path>
+        <path d="M10 21v-6h4v6"></path>
+      </svg>
+      <span>Home</span>
+    </a>
+
+    <!-- Anggaran -->
+    <a href="../anggaran/index.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M18 7H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
+        <path d="M16 12h.01" />
+        <path d="M6 7V6a2 2 0 0 1 2-2h8" />
+      </svg>
+      <span>Anggaran</span>
+    </a>
+
+    <!-- Tambah -->
+    <a href="../tambah-catatan/index.html" class="nav-add">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M12 5v14"></path>
+        <path d="M5 12h14"></path>
+      </svg>
+    </a>
+
+    <!-- Statistik -->
+    <a href="../statistik/index.html" class="nav-item ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M6 20V10"></path>
+        <path d="M12 20V4"></path>
+        <path d="M18 20v-7"></path>
+      </svg>
+      <span>Statistik</span>
+    </a>
+
+    <!-- Pengaturan -->
+    <a href="../pengaturan/index.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10.09 3H10a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 21 10.09H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+      <span>Pengaturan</span>
+    </a>
+
+  </nav>
+
+<script>
+
+const categories = [
+    {
+        name: "Makanan",
+        icon: "ti-tools-kitchen-2",
+        color: "#4F6F52",
+        value: 0
+    },
+    {
+        name: "Transportasi",
+        icon: "ti-car",
+        color: "#C97B4A",
+        value: 0
+    },
+    {
+        name: "Hiburan",
+        icon: "ti-movie",
+        color: "#7A8FAE",
+        value: 0
+    },
+    {
+        name: "Belanja",
+        icon: "ti-shopping-bag",
+        color: "#B5544A",
+        value: 0
+    },
+    {
+        name: "Lainnya",
+        icon: "ti-dots",
+        color: "#C9B458",
+        value: 0
+    }
+];
+
+const categoryIconPaths = {
+    "ti-tools-kitchen-2": `
+        <path d="M3 3v7c0 1.1.9 2 2 2h2V3"/>
+        <path d="M5 3v18"/>
+        <path d="M19 3a4 4 0 0 0-4 4v5h4"/>
+        <path d="M17 12v9"/>
+    `,
+    "ti-car": `
+        <path d="M5 17h-2v-6l2-5h11l2 5h1a2 2 0 0 1 2 2v4h-2"/>
+        <circle cx="7" cy="17" r="2"/>
+        <circle cx="17" cy="17" r="2"/>
+    `,
+    "ti-movie": `
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <path d="M7 5v14M17 5v14"/>
+    `,
+    "ti-shopping-bag": `
+        <path d="M6 7h12l-1 13H7L6 7z"/>
+        <path d="M9 9a3 3 0 0 1 6 0"/>
+    `,
+    "ti-dots": `
+        <circle cx="6" cy="12" r="1.5"/>
+        <circle cx="12" cy="12" r="1.5"/>
+        <circle cx="18" cy="12" r="1.5"/>
+    `
+};
+
+function categoryIconSVG(iconKey, color) {
+    return `
+        <svg viewBox="0 0 24 24"
+             width="20"
+             height="20"
+             fill="none"
+             stroke="${color}"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+            ${categoryIconPaths[iconKey]}
+        </svg>
+    `;
+}
+
+let selectedIndex = null;
+let categoryMode = true;
+let manualBudget = 0;
+
+const categoryList = document.getElementById('categoryList');
+const totalBudget = document.getElementById('totalBudget');
+const modal = document.getElementById('modal');
+const budgetInput = document.getElementById('budgetInput');
+const toggle = document.getElementById('toggleBudget');
+
+function formatRupiah(number){
+    return "Rp" + number.toLocaleString('id-ID');
+}
+
+function calculateTotal(){
+    return categories.reduce((a,b)=>a+b.value,0);
+}
+
+function updateTotal(){
+
+    if(categoryMode){
+        totalBudget.textContent =
+            formatRupiah(calculateTotal());
+    }else{
+        totalBudget.textContent =
+            formatRupiah(manualBudget);
+    }
+
+}
+
+function renderCategories(){
+
+    categoryList.innerHTML='';
+
+    if(!categoryMode){
+        categoryList.classList.add('hidden');
+        return;
+    }
+
+    categoryList.classList.remove('hidden');
+
+    categories.forEach((cat,index)=>{
+
+        categoryList.innerHTML += `
+        <div class="category-item"
+             onclick="openCategory(${index})">
+
+            <div class="category-left">
+
+                <div class="category-icon"
+     style="background:${cat.color}15">
+    ${categoryIconSVG(cat.icon, cat.color)}
+</div>
+
+                <div class="category-name">
+                    ${cat.name}
+                </div>
+
+            </div>
+
+            <div class="category-value">
+                ${formatRupiah(cat.value)}
+            </div>
+
+        </div>
+        `;
+    });
+
+}
+
+function openCategory(index){
+
+    selectedIndex=index;
+
+    document.getElementById('modalTitle')
+        .textContent='Atur Anggaran';
+
+    document.getElementById('modalSubtitle')
+        .textContent=categories[index].name;
+
+    budgetInput.value=
+        categories[index].value;
+
+    modal.classList.add('active');
+}
+
+function openManualBudget(){
+
+    document.getElementById('modalTitle')
+        .textContent='Atur Total Anggaran';
+
+    document.getElementById('modalSubtitle')
+        .textContent='';
+
+    budgetInput.value=manualBudget;
+
+    selectedIndex='manual';
+
+    modal.classList.add('active');
+}
+
+document
+.getElementById('budgetCard')
+.addEventListener('click',()=>{
+
+    if(!categoryMode){
+        openManualBudget();
+    }
+
+});
+
+document
+.getElementById('cancelBtn')
+.addEventListener('click',()=>{
+
+    modal.classList.remove('active');
+});
+
+document
+.getElementById('saveBtn')
+.addEventListener('click',()=>{
+
+    const value =
+        parseInt(budgetInput.value)||0;
+
+    if(selectedIndex==='manual'){
+
+        manualBudget=value;
+
+    }else{
+
+        categories[selectedIndex].value=value;
+
+    }
+
+    modal.classList.remove('active');
+
+    renderCategories();
+    updateTotal();
+});
+
+toggle.addEventListener('change',function(){
+
+    categoryMode=this.checked;
+
+    if(!categoryMode){
+
+        categories.forEach(cat=>{
+            cat.value=0;
         });
-    </script>
+
+        manualBudget=0;
+    }
+
+    renderCategories();
+    updateTotal();
+});
+
+renderCategories();
+updateTotal();
+
+</script>
+
 </body>
 </html>

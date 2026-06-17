@@ -437,7 +437,6 @@
   <!-- ============ HEADER ============ -->
   <header class="page-head">
     <div>
-
       <p class="greeting" id="greetingText">Pantau keuanganmu hari ini</p>
     </div>
     <div class="date-filter" id="dateFilterBtn" role="button" aria-label="Pilih tanggal">
@@ -511,50 +510,62 @@
   </main>
 
   <nav class="bottom-nav">
+
+    <!-- Home -->
     <a href="../home/home.html" class="nav-item active">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round">
-        <path d="M3 10.5L12 3l9 7.5" />
-        <path d="M5 9.5V21h14V9.5" />
-        <path d="M10 21v-6h4v6" />
+        <path d="M3 10.5L12 3l9 7.5"></path>
+        <path d="M5 9.5V21h14V9.5"></path>
+        <path d="M10 21v-6h4v6"></path>
       </svg>
       <span>Home</span>
     </a>
-    <a href="../anggaran/anggaran.html" class="nav-item">
+
+    <!-- Anggaran -->
+    <a href="../anggaran/index.html" class="nav-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round">
-        <path d="M4 19h16" />
-        <path d="M7 16V9" />
-        <path d="M12 16V5" />
-        <path d="M17 16v-3" />
+        <path d="M18 7H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
+        <path d="M16 12h.01" />
+        <path d="M6 7V6a2 2 0 0 1 2-2h8" />
       </svg>
       <span>Anggaran</span>
     </a>
-    <a href="../anggaran/tambah.html" class="nav-add">
+
+    <!-- Tambah -->
+    <a href="../tambah-catatan/index.html" class="nav-add">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
         stroke-linejoin="round">
-        <path d="M12 5v14" />
-        <path d="M5 12h14" />
+        <path d="M12 5v14"></path>
+        <path d="M5 12h14"></path>
       </svg>
     </a>
-    <a href="../statistik/index.html" class="nav-item">
+
+    <!-- Statistik -->
+    <a href="../statistik/index.html" class="nav-item ">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round">
-        <path d="M6 20V10" />
-        <path d="M12 20V4" />
-        <path d="M18 20v-7" />
+        <path d="M6 20V10"></path>
+        <path d="M12 20V4"></path>
+        <path d="M18 20v-7"></path>
       </svg>
       <span>Statistik</span>
     </a>
+
+    <!-- Pengaturan -->
     <a href="../pengaturan/index.html" class="nav-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c1.5-3 4.5-5 8-5s6.5 2 8 5" />
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10.09 3H10a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 21 10.09H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
       </svg>
       <span>Pengaturan</span>
     </a>
+
   </nav>
+
 
   <script>
     const rupiah = n => (n < 0
@@ -655,13 +666,13 @@
       remEl.className = 's-value' + (tier ? ' ' + tier : '');
     }
 
-   function formatNavDate(ymd){
-  const d = new Date(ymd + 'T00:00:00');
-  return d.toLocaleDateString('id-ID',{
-    day:'numeric',
-    month:'long'
-  });
-}
+    function formatNavDate(ymd) {
+      const d = new Date(ymd + 'T00:00:00');
+      return d.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long'
+      });
+    }
 
     function renderTransactions() {
       const txs = transactions[selectedDate] || [];
@@ -699,7 +710,7 @@
 
 
       document.getElementById('currentDayLabel').textContent =
-  formatNavDate(selectedDate);
+        formatNavDate(selectedDate);
     }
 
     const dateLabel = document.getElementById('dateLabel');

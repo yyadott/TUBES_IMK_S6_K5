@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tambah Catatan</title>
+
+<style>
+:root{
+    --primary:#4F6F52;
+    --bg:#F6F7F8;
+    --card:#FFFFFF;
+    --text:#1F2937;
+    --text-soft:#8A8782;
+    --border:#E5E7EB;
+    --expense:#C97B4A;
+    --income:#4F6F52;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+}
+
+.container{
+    max-width:480px;
+    margin:auto;
+    min-height:100vh;
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:24px;
+}
+
+.back-btn{
+    border:none;
+    background:none;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.title{
+    font-size:1.3rem;
+    font-weight:700;
+}
+
+.card{
+    background:var(--card);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.type-switch{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.type-btn{
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    font-weight:600;
+    cursor:pointer;
+    background:#ECECEC;
+    transition:.2s;
+}
+
+.type-btn.active-expense{
+    background:var(--primary);
+    color:white;
+}
+
+.type-btn.active-income{
+    background:var(--primary);
+    color:white;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    font-size:.9rem;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+input,
+textarea{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    font-size:1rem;
+    outline:none;
+}
+
+textarea{
+    resize:none;
+    min-height:100px;
+}
+
+/* ============ KATEGORI: pilihan icon ============ */
+.category-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px 10px;
+    padding-top:4px;
+}
+
+.category-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    width:64px;
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-family:inherit;
+}
+
+.category-item .icon-circle{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    background:#EFEFEF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid transparent;
+    transition:background .2s ease, border-color .2s ease;
+}
+
+.category-item .icon-circle svg{
+    width:22px;
+    height:22px;
+    color:var(--text-soft);
+    transition:color .2s ease;
+}
+
+.category-item .label{
+    font-size:.7rem;
+    font-weight:600;
+    color:var(--text-soft);
+    text-align:center;
+    line-height:1.2;
+}
+
+.category-item.active .label{
+    color:var(--text);
+    font-weight:700;
+}
+
+.category-item.active .icon-circle svg{
+    color:#fff;
+}
+
+.category-item.active .icon-circle{
+    background:var(--primary);
+    border-color:var(--primary);
+}
+
+.category-item:focus-visible .icon-circle{
+    outline:2px solid var(--primary);
+    outline-offset:2px;
+}
+
+.add-category{
+    display:inline-block;
+    margin-top:12px;
+    text-decoration:none;
+    color:var(--primary);
+    font-size:.9rem;
+    font-weight:600;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+    margin-top:24px;
+}
+
+.btn{
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btn-cancel{
+    background:#E5E7EB;
+}
+
+.btn-save{
+    background:var(--primary);
+    color:white;
+}
+
+.success-msg{
+    margin-top:15px;
+    text-align:center;
+    color:var(--primary);
+    font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <div class="title">Tambah Catatan</div>
+    </div>
+
+    <div class="card">
+
+        <div class="type-switch">
+            <button id="expenseBtn" class="type-btn active-expense">
+                Pengeluaran
+            </button>
+
+            <button id="incomeBtn" class="type-btn">
+                Pemasukan
+            </button>
+        </div>
+
+        <div class="form-group">
+            <label>Nominal</label>
+            <input
+                type="text"
+                id="amount"
+                placeholder="Rp 0">
+        </div>
+
+        <div class="form-group">
+            <label>Deskripsi</label>
+            <textarea
+                id="description"
+                placeholder="Tambahkan deskripsi..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Kategori</label>
+
+            <div class="category-grid" id="categoryGrid"></div>
+
+            <a href="../tambah-kategori/index.html" class="add-category">
+                + Tambah Kategori
+            </a>
+        </div>
+
+        <div class="form-group">
+            <label>Tanggal</label>
+            <input type="date" id="date">
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-cancel" onclick="history.back()">
+                Batal
+            </button>
+
+            <button class="btn btn-save" id="saveBtn">
+                Simpan
+            </button>
+        </div>
+
+        <div class="success-msg" id="successMsg"></div>
+
+    </div>
+</div>
+
+<script>
+const categories = {
+    expense: [
+        "Makanan",
+        "Transportasi",
+        "Hiburan",
+        "Belanja",
+        "Lainnya"
+    ],
+
+    income: [
+        "Gaji",
+        "Freelance",
+        "Hadiah",
+        "Lainnya"
+    ]
+};
+
+/* path-path icon (gaya sama dengan halaman Pengaturan, stroke 2px, lucide-style) */
+const categoryIcons = {
+    "Makanan": `<path d="M3 3v7c0 1.1.9 2 2 2h2V3" /><path d="M5 3v18" /><path d="M19 3a4 4 0 0 0-4 4v5h4" /><path d="M17 12v9" />`,
+    "Transportasi": `<path d="M5 17h-2v-6l2 -5h11l2 5h1a2 2 0 0 1 2 2v4h-2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /><path d="M9 17h6" />`,
+    "Hiburan": `<rect x="3" y="5" width="18" height="14" rx="2" /><path d="M7 5l3 4M14 5l3 4" />`,
+    "Belanja": `<path d="M5 8h14l-1 12H6L5 8z" /><path d="M9 8a3 3 0 0 1 6 0" />`,
+    "Gaji": `<rect x="2" y="6" width="20" height="12" rx="2" /><circle cx="12" cy="12" r="2" /><path d="M6 12h.01M18 12h.01" />`,
+    "Freelance": `<rect x="3" y="4" width="18" height="12" rx="1" /><path d="M2 20h20" />`,
+    "Hadiah": `<rect x="3" y="8" width="18" height="4" rx="1" /><path d="M12 8v13" /><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" /><path d="M7.5 8a2.5 2.5 0 0 1 0-5C9 3 12 6 12 8" /><path d="M16.5 8a2.5 2.5 0 0 0 0-5C15 3 12 6 12 8" />`,
+    "Lainnya": `<circle cx="6" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="18" cy="12" r="1.5" />`
+};
+
+let currentType = "expense";
+let selectedCategory = categories[currentType][0];
+
+const expenseBtn = document.getElementById("expenseBtn");
+const incomeBtn = document.getElementById("incomeBtn");
+const categoryGrid = document.getElementById("categoryGrid");
+const amountInput = document.getElementById("amount");
+
+function renderCategories() {
+
+    categoryGrid.innerHTML = "";
+    categoryGrid.className = "category-grid";
+
+    categories[currentType].forEach((category, index) => {
+
+        const item = document.createElement("button");
+
+        item.type = "button";
+        item.className = "category-item" + (index === 0 ? " active" : "");
+        item.dataset.category = category;
+
+        const iconPaths = categoryIcons[category] || categoryIcons["Lainnya"];
+
+        item.innerHTML =
+            '<span class="icon-circle">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                    iconPaths +
+                '</svg>' +
+            '</span>' +
+            '<span class="label">' + category + '</span>';
+
+        item.addEventListener("click", () => {
+
+            categoryGrid
+                .querySelectorAll(".category-item")
+                .forEach(el => el.classList.remove("active"));
+
+            item.classList.add("active");
+            selectedCategory = category;
+        });
+
+        categoryGrid.appendChild(item);
+    });
+
+    selectedCategory = categories[currentType][0];
+}
+
+expenseBtn.addEventListener("click", () => {
+
+    currentType = "expense";
+
+    expenseBtn.classList.add("active-expense");
+    incomeBtn.classList.remove("active-income");
+
+    renderCategories();
+});
+
+incomeBtn.addEventListener("click", () => {
+
+    currentType = "income";
+
+    incomeBtn.classList.add("active-income");
+    expenseBtn.classList.remove("active-expense");
+
+    renderCategories();
+});
+
+amountInput.addEventListener("input", function() {
+
+    let value = this.value.replace(/\D/g,'');
+
+    if(value === ""){
+        this.value = "";
+        return;
+    }
+
+    this.value =
+        "Rp " +
+        Number(value).toLocaleString("id-ID");
+});
+
+document.getElementById("date").value =
+    new Date().toISOString().split("T")[0];
+
+document.getElementById("saveBtn")
+.addEventListener("click", () => {
+
+    const amount =
+        amountInput.value.replace(/[^\d]/g,'');
+
+    if(!amount){
+
+        alert("Masukkan nominal terlebih dahulu.");
+        return;
+    }
+
+    const transaction = {
+
+        type: currentType,
+
+        amount: parseInt(amount),
+
+        category: selectedCategory,
+
+        date: document.getElementById("date").value,
+
+        note: document.getElementById("description").value
+    };
+
+    const transactions =
+        JSON.parse(
+            localStorage.getItem("transactions")
+        ) || [];
+
+    transactions.push(transaction);
+
+    localStorage.setItem(
+        "transactions",
+        JSON.stringify(transactions)
+    );
+
+    document.getElementById("successMsg")
+    .textContent = "Catatan berhasil disimpan";
+
+    setTimeout(() => {
+
+        window.location.href = "../home/home.html";
+
+    },800);
+});
+
+renderCategories();
+</script>
+
+</body>
+</html>

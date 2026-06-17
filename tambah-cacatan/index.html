@@ -139,12 +139,13 @@ textarea{
     width:54px;
     height:54px;
     border-radius:50%;
-    background:#EFEFEF;
+    background:var(--card);
     display:flex;
     align-items:center;
     justify-content:center;
-    border:2px solid transparent;
-    transition:background .2s ease, border-color .2s ease;
+    border:1.5px solid var(--border);
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+    transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .12s ease;
 }
 
 .category-item .icon-circle svg{
@@ -162,6 +163,18 @@ textarea{
     line-height:1.2;
 }
 
+/* efek hover: kasih sinyal bahwa ini bisa diklik */
+.category-item:not(.active):hover .icon-circle{
+    border-color:var(--primary);
+    background:#F0F4F0;
+    box-shadow:0 3px 8px rgba(79,111,82,.18);
+}
+
+/* efek ditekan */
+.category-item:active .icon-circle{
+    transform:scale(.93);
+}
+
 .category-item.active .label{
     color:var(--text);
     font-weight:700;
@@ -174,6 +187,7 @@ textarea{
 .category-item.active .icon-circle{
     background:var(--primary);
     border-color:var(--primary);
+    box-shadow:0 4px 10px rgba(79,111,82,.25);
 }
 
 .category-item:focus-visible .icon-circle{
@@ -182,12 +196,28 @@ textarea{
 }
 
 .add-category{
-    display:inline-block;
-    margin-top:12px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:14px;
     text-decoration:none;
     color:var(--primary);
     font-size:.9rem;
     font-weight:600;
+    padding:10px 16px;
+    border:1.5px dashed var(--primary);
+    border-radius:12px;
+    background:#F0F4F0;
+    transition:background .2s ease, box-shadow .2s ease, transform .12s ease;
+}
+
+.add-category:hover{
+    background:#E4EDE5;
+    box-shadow:0 3px 8px rgba(79,111,82,.18);
+}
+
+.add-category:active{
+    transform:scale(.97);
 }
 
 .button-group{

@@ -6,15 +6,15 @@
 <title>Tambah Catatan</title>
 
 <style>
-:root{
-    --primary:#4F6F52;
-    --bg:#F6F7F8;
-    --card:#FFFFFF;
-    --text:#1F2937;
-    --text-soft:#8A8782;
-    --border:#E5E7EB;
-    --expense:#C97B4A;
-    --income:#4F6F52;
+:root {
+  --primary: #1A4FBF;
+  --bg: #F0F4FF;
+  --card: #FFFFFF;
+  --text: #0F1F4B;
+  --text-soft: #5A6A8A;
+  --border: #C8D5F5;
+  --expense: #C97B4A;
+  --income: #1A4FBF;
 }
 
 *{
@@ -43,6 +43,45 @@ body{
     margin-bottom:24px;
 }
 
+header.page-head {
+    padding: 20px 20px 10px 1px;
+    display: flex;
+    align-items: left;
+    gap: 12px;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+header.page-head .back-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+header.page-head .back-btn svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text);
+}
+
+header.page-head .head-text h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+header.page-head .head-text p {
+    color: var(--text-soft);
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
 .back-btn{
     border:none;
     background:none;
@@ -139,12 +178,13 @@ textarea{
     width:54px;
     height:54px;
     border-radius:50%;
-    background:#EFEFEF;
+    background:var(--card);
     display:flex;
     align-items:center;
     justify-content:center;
-    border:2px solid transparent;
-    transition:background .2s ease, border-color .2s ease;
+    border:1.5px solid var(--border);
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+    transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .12s ease;
 }
 
 .category-item .icon-circle svg{
@@ -162,6 +202,18 @@ textarea{
     line-height:1.2;
 }
 
+/* efek hover: kasih sinyal bahwa ini bisa diklik */
+.category-item:not(.active):hover .icon-circle{
+    border-color:var(--primary);
+    background:#F0F4F0;
+    box-shadow:0 3px 8px rgba(79,111,82,.18);
+}
+
+/* efek ditekan */
+.category-item:active .icon-circle{
+    transform:scale(.93);
+}
+
 .category-item.active .label{
     color:var(--text);
     font-weight:700;
@@ -171,10 +223,7 @@ textarea{
     color:#fff;
 }
 
-.category-item.active .icon-circle{
-    background:var(--primary);
-    border-color:var(--primary);
-}
+
 
 .category-item:focus-visible .icon-circle{
     outline:2px solid var(--primary);
@@ -182,12 +231,28 @@ textarea{
 }
 
 .add-category{
-    display:inline-block;
-    margin-top:12px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:14px;
     text-decoration:none;
     color:var(--primary);
     font-size:.9rem;
     font-weight:600;
+    padding:10px 16px;
+    border:1.5px dashed var(--primary);
+    border-radius:12px;
+    background:#F0F4F0;
+    transition:background .2s ease, box-shadow .2s ease, transform .12s ease;
+}
+
+.add-category:hover{
+    background:#E4EDE5;
+    box-shadow:0 3px 8px rgba(79,111,82,.18);
+}
+
+.add-category:active{
+    transform:scale(.97);
 }
 
 .button-group{
@@ -227,10 +292,18 @@ textarea{
 
 <div class="container">
 
-    <div class="header">
-        <button class="back-btn" onclick="history.back()">←</button>
-        <div class="title">Tambah Catatan</div>
+    <header class="page-head">
+    <button class="back-btn" onclick="history.back()" aria-label="Kembali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+        </svg>
+    </button>
+    <div class="head-text">
+        <h1>Tambah Catatan</h1>
+        <p>Catat pengeluaran atau pemasukan</p>
     </div>
+</header>
 
     <div class="card">
 
@@ -319,6 +392,17 @@ const categoryIcons = {
     "Lainnya": `<circle cx="6" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="18" cy="12" r="1.5" />`
 };
 
+const categoryColors = {
+  "Makanan":      "#4F6F52",
+  "Transportasi": "#C97B4A",
+  "Hiburan":      "#7A8FAE",
+  "Belanja":      "#B5544A",
+  "Lainnya":      "#C9B458",
+  "Gaji":         "#4F6F52",
+  "Freelance":    "#7A8FAE",
+  "Hadiah":       "#C9A227"
+};
+
 let currentType = "expense";
 let selectedCategory = categories[currentType][0];
 
@@ -328,41 +412,41 @@ const categoryGrid = document.getElementById("categoryGrid");
 const amountInput = document.getElementById("amount");
 
 function renderCategories() {
-
     categoryGrid.innerHTML = "";
-    categoryGrid.className = "category-grid";
-
     categories[currentType].forEach((category, index) => {
-
+        const color = categoryColors[category] || "#8A8782";
+        const iconPaths = categoryIcons[category] || categoryIcons["Lainnya"];
         const item = document.createElement("button");
-
         item.type = "button";
         item.className = "category-item" + (index === 0 ? " active" : "");
         item.dataset.category = category;
 
-        const iconPaths = categoryIcons[category] || categoryIcons["Lainnya"];
-
+        const isActive = index === 0;
         item.innerHTML =
-            '<span class="icon-circle">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<span class="icon-circle" style="background:' + (isActive ? color : color + '22') + ';border-color:' + (isActive ? color : 'transparent') + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="' + (isActive ? '#fff' : color) + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                     iconPaths +
                 '</svg>' +
             '</span>' +
             '<span class="label">' + category + '</span>';
 
         item.addEventListener("click", () => {
-
-            categoryGrid
-                .querySelectorAll(".category-item")
-                .forEach(el => el.classList.remove("active"));
-
+            categoryGrid.querySelectorAll(".category-item").forEach(el => {
+                const c = categoryColors[el.dataset.category] || "#8A8782";
+                el.classList.remove("active");
+                el.querySelector(".icon-circle").style.background = c + "22";
+                el.querySelector(".icon-circle").style.borderColor = "transparent";
+                el.querySelector("svg").setAttribute("stroke", c);
+            });
             item.classList.add("active");
+            item.querySelector(".icon-circle").style.background = color;
+            item.querySelector(".icon-circle").style.borderColor = color;
+            item.querySelector("svg").setAttribute("stroke", "#fff");
             selectedCategory = category;
         });
 
         categoryGrid.appendChild(item);
     });
-
     selectedCategory = categories[currentType][0];
 }
 

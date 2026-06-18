@@ -8,27 +8,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
         :root {
-            --bg: #FAFAF8;
-            --surface: #FFFFFF;
-            --border: #E6E4E0;
-            --text: #2B2B28;
-            --text-soft: #8A8782;
-            --accent: #4F6F52;
-            /* hijau tenang - hemat */
-            --accent-soft: #E7EFE8;
-            --warn: #C9A227;
-            /* kuning kunyit - 80% */
-            --warn-soft: #FBF6E3;
-            --alert: #C9722E;
-            /* oranye - 90% */
-            --alert-soft: #FBEDE3;
-            --danger: #B5544A;
-            /* merah - 100%+ */
-            --danger-soft: #FBE8E5;
-            --radius: 14px;
-            --gap: 16px;
-            font-size: 16px;
-        }
+  --bg: #F0F4FF;
+  --surface: #FFFFFF;
+  --border: #C8D5F5;
+  --text: #0F1F4B;
+  --text-soft: #5A6A8A;
+  --accent: #1A4FBF;
+--accent-soft: #DCE8FF;
+--warn: #B07D10;        /* kuning — 80–89% */
+--warn-soft: #FDF4DC;
+--alert: #C9722E;       /* oranye/merah — 90–99% */
+--alert-soft: #FBEDE3;
+--danger: #B5544A;      /* merah — 100%+ */
+--danger-soft: #FBE8E5;
+  --radius: 14px;
+  --gap: 16px;
+  --progress-ok: #4F6F52;       /* hijau — < 80% */
+--progress-ok-bg: #E7EFE8;   /* hijau muda background track */
+  font-size: 16px;
+}
 
         * {
             box-sizing: border-box;
@@ -102,9 +100,9 @@
         }
 
         .mode-toggle button.active[data-mode="expense"] {
-            background: var(--danger-soft);
-            color: var(--danger);
-            border-color: var(--danger-soft);
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: var(--accent-soft);
         }
 
         .mode-toggle button.active[data-mode="income"] {
@@ -314,27 +312,27 @@
             margin-top: 10px;
             height: 8px;
             border-radius: 999px;
-            background: var(--accent-soft);
+            background: #E5E7EB;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--accent);
+            background: var(--progress-ok);
             border-radius: 999px;
             transition: width .4s ease;
         }
 
         .progress-fill.warn {
-            background: var(--warn);
+            background: #D4A017;
         }
 
         .progress-fill.tier-alert {
-            background: var(--alert);
+            background: #C9722E;
         }
 
         .progress-fill.danger {
-            background: var(--danger);
+            background: #B5544A;
         }
 
         /* Alert banner */
@@ -590,7 +588,7 @@
         .budget-item .pct-label {
             font-size: 0.72rem;
             font-weight: 700;
-            color: var(--accent);
+            color: #4F6F52;
         }
 
         .budget-item .pct-label.warn {
@@ -931,7 +929,7 @@
         <path d="M16 12h.01" />
         <path d="M6 7V6a2 2 0 0 1 2-2h8" />
       </svg>
-      <span>Anggaran</span>
+      <span>Budget</span>
     </a>
 
     <!-- Tambah -->
@@ -1054,10 +1052,10 @@
                     totalIncome: 4200000,
                     weeklyIncome: [1000000, 1000000, 1000000, 1200000],
                     categories: [
-                        { name: 'Gaji', value: 3500000, color: '#4F6F52', icon: 'ti-briefcase' },
+                        { name: 'Gaji', value: 2500000, color: '#4F6F52', icon: 'ti-briefcase' },
                         { name: 'Freelance', value: 450000, color: '#7A8FAE', icon: 'ti-laptop' },
-                        { name: 'Hadiah', value: 150000, color: '#C9A227', icon: 'ti-gift' },
-                        { name: 'Lainnya', value: 100000, color: '#C9B458', icon: 'ti-dots' },
+                        { name: 'Hadiah', value: 650000, color: '#C9A227', icon: 'ti-gift' },
+                        { name: 'Lainnya', value: 600000, color: '#C9B458', icon: 'ti-dots' },
                     ]
                 },
                 4: { // Mei 2026
@@ -1454,7 +1452,7 @@
                     labels: barLabels,
                     datasets: [{
                         data: barData,
-                        backgroundColor: isIncome ? '#4F6F52' : '#B5544A',
+                        backgroundColor: isIncome ? '#4A90D9' : '#1A4FBF',
                         borderRadius: 6,
                         maxBarThickness: 36
                     }]

@@ -6,18 +6,18 @@
 <title>Anggaran</title>
 
 <style>
-:root{
-    --bg:#FAFAF8;
-    --surface:#FFFFFF;
-    --border:#E6E4E0;
+:root {
+    --bg: #F0F4FF;
+    --surface: #FFFFFF;
+    --border: #C8D5F5;
 
-    --text:#2B2B28;
-    --text-soft:#8A8782;
+    --text: #0F1F4B;
+    --text-soft: #5A6A8A;
 
-    --accent:#4F6F52;
-    --accent-soft:#E7EFE8;
+    --accent: #1A4FBF;
+    --accent-soft: #DCE8FF;
 
-    --radius:14px;
+    --radius: 14px;
 }
 
 *{
@@ -63,11 +63,28 @@ body{
 }
 
 .category-btn{
-    border:none;
-    background:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
     color:var(--accent);
     font-weight:600;
+    font-size:.85rem;
     cursor:pointer;
+    text-decoration:none;
+    padding:8px 14px;
+    border:1.5px dashed var(--accent);
+    border-radius:10px;
+    background:var(--accent-soft);
+    transition:background .2s ease, box-shadow .2s ease, transform .12s ease;
+}
+
+.category-btn:hover{
+    background:#DCE8DD;
+    box-shadow:0 3px 8px rgba(79,111,82,.18);
+}
+
+.category-btn:active{
+    transform:scale(.97);
 }
 
 .budget-card{
@@ -384,7 +401,7 @@ input:checked + .slider:before{
     <div class="header">
         <div class="header-left">
             
-            <h1 class="page-title">Anggaran</h1>
+            <h1 class="page-title">Budget</h1>
         </div>
 
         <a href="../tambah-kategori/index.html" class="category-btn">
@@ -393,12 +410,12 @@ input:checked + .slider:before{
     </div>
 
     <div class="budget-card" id="budgetCard">
-        <div class="budget-label">Total Anggaran</div>
+        <div class="budget-label">Total Budget</div>
         <div class="budget-total" id="totalBudget">Rp0</div>
     </div>
 
     <div class="setting-row">
-        <div class="setting-title">Anggaran per kategori</div>
+        <div class="setting-title">Budget per kategori</div>
 
         <label class="switch">
             <input type="checkbox" id="toggleBudget" checked>
@@ -416,7 +433,7 @@ input:checked + .slider:before{
     <div class="modal-content">
 
         <div class="modal-title" id="modalTitle">
-            Atur Anggaran
+            Atur Budget
         </div>
 
         <div class="modal-subtitle" id="modalSubtitle">
@@ -464,7 +481,7 @@ input:checked + .slider:before{
         <path d="M16 12h.01" />
         <path d="M6 7V6a2 2 0 0 1 2-2h8" />
       </svg>
-      <span>Anggaran</span>
+      <span>Budget</span>
     </a>
 
     <!-- Tambah -->

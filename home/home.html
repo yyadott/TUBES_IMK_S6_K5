@@ -7,23 +7,23 @@
   <title>Home - Catatan Keuangan</title>
   <style>
     :root {
-      --bg: #FAFAF8;
-      --surface: #FFFFFF;
-      --border: #E6E4E0;
-      --text: #2B2B28;
-      --text-soft: #8A8782;
-      --accent: #4F6F52;
-      --accent-soft: #E7EFE8;
-      --warn: #C9A227;
-      --warn-soft: #FBF6E3;
-      --alert: #C9722E;
-      --alert-soft: #FBEDE3;
-      --danger: #B5544A;
-      --danger-soft: #FBE8E5;
-      --radius: 14px;
-      --gap: 16px;
-      font-size: 16px;
-    }
+  --bg: #F0F4FF;
+  --surface: #FFFFFF;
+  --border: #C8D5F5;
+  --text: #0F1F4B;
+  --text-soft: #5A6A8A;
+  --accent: #1A4FBF;
+  --accent-soft: #DCE8FF;
+  --warn: #B07D10;
+  --warn-soft: #FDF4DC;
+  --alert: #C9722E;
+  --alert-soft: #FBEDE3;
+  --danger: #B5544A;
+  --danger-soft: #FBE8E5;
+  --radius: 14px;
+  --gap: 16px;
+  font-size: 16px;
+}
 
     * {
       box-sizing: border-box;
@@ -250,6 +250,21 @@
       cursor: default;
     }
 
+    /* tombol kalender (pindahan dari header) */
+    #dateFilterBtn {
+      position: relative;
+      margin-left: 8px;
+    }
+
+    #dateFilterBtn input[type="date"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
     /* ============ TRANSACTION CARDS ============ */
     .tx-list {
       display: flex;
@@ -437,18 +452,8 @@
   <!-- ============ HEADER ============ -->
   <header class="page-head">
     <div>
+
       <p class="greeting" id="greetingText">Pantau keuanganmu hari ini</p>
-    </div>
-    <div class="date-filter" id="dateFilterBtn" role="button" aria-label="Pilih tanggal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round">
-        <rect x="3" y="4" width="18" height="18" rx="2" />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-      </svg>
-      <span id="dateLabel">Hari ini</span>
-      <input type="date" id="datePicker">
     </div>
   </header>
 
@@ -461,11 +466,11 @@
 
       <div class="summary-row">
         <div class="summary-item">
-          <div class="s-label">Total Anggaran</div>
+          <div class="s-label">Total Budget</div>
           <div class="s-value" id="summaryBudget">Rp 2.500.000</div>
         </div>
         <div class="summary-item">
-          <div class="s-label">Sisa Anggaran</div>
+          <div class="s-label">Sisa Budget</div>
           <div class="s-value warn" id="summaryRemaining">Rp 660.000</div>
         </div>
       </div>
@@ -491,6 +496,18 @@
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
+
+        <!-- tombol kalender dipindah ke sini -->
+        <button class="tx-nav-btn" id="dateFilterBtn" type="button" aria-label="Pilih tanggal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          <input type="date" id="datePicker">
+        </button>
       </div>
     </div>
 
@@ -509,7 +526,7 @@
 
   </main>
 
-  <nav class="bottom-nav">
+<nav class="bottom-nav">
 
     <!-- Home -->
     <a href="../home/home.html" class="nav-item active">
@@ -523,14 +540,14 @@
     </a>
 
     <!-- Anggaran -->
-    <a href="../anggaran/index.html" class="nav-item">
+    <a href="../anggaran/index.html" class="nav-item ">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round">
         <path d="M18 7H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
         <path d="M16 12h.01" />
         <path d="M6 7V6a2 2 0 0 1 2-2h8" />
       </svg>
-      <span>Anggaran</span>
+      <span>Budget</span>
     </a>
 
     <!-- Tambah -->
@@ -565,7 +582,6 @@
     </a>
 
   </nav>
-
 
   <script>
     const rupiah = n => (n < 0
@@ -666,13 +682,13 @@
       remEl.className = 's-value' + (tier ? ' ' + tier : '');
     }
 
-    function formatNavDate(ymd) {
-      const d = new Date(ymd + 'T00:00:00');
-      return d.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long'
-      });
-    }
+   function formatNavDate(ymd){
+  const d = new Date(ymd + 'T00:00:00');
+  return d.toLocaleDateString('id-ID',{
+    day:'numeric',
+    month:'long'
+  });
+}
 
     function renderTransactions() {
       const txs = transactions[selectedDate] || [];
@@ -688,6 +704,7 @@
         list.innerHTML = '';
         list.style.display = 'none';
         empty.style.display = 'block';
+        document.getElementById('currentDayLabel').textContent = formatNavDate(selectedDate);
         return;
       }
 
@@ -710,10 +727,9 @@
 
 
       document.getElementById('currentDayLabel').textContent =
-        formatNavDate(selectedDate);
+  formatNavDate(selectedDate);
     }
 
-    const dateLabel = document.getElementById('dateLabel');
     const datePicker = document.getElementById('datePicker');
     const filterBtn = document.getElementById('dateFilterBtn');
 
@@ -726,7 +742,6 @@
     });
     datePicker.addEventListener('change', () => {
       selectedDate = datePicker.value || today;
-      dateLabel.textContent = formatDateLabel(selectedDate);
       datePicker.style.pointerEvents = 'none';
       updateNavButtons();
       render();
@@ -741,7 +756,6 @@
       const ymd = toYMD(d);
       if (ymd > today) return;
       selectedDate = ymd;
-      dateLabel.textContent = formatDateLabel(selectedDate);
       datePicker.value = selectedDate;
       updateNavButtons();
       render();

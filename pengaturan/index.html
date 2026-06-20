@@ -156,6 +156,68 @@
         .limit-note { font-size: 0.72rem; color: var(--text-soft); margin-top: 8px; line-height: 1.5; }
         .limit-note b { color: var(--text); }
 
+        /* ============ KATEGORI ============ */
+        .category-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 14px; border-bottom: 1px solid #F0EEE9;
+        }
+        .list-card .category-row:last-child { border-bottom: none; }
+        .category-row .list-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .cat-icon-wrap { width: 34px; height: 34px; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .cat-icon-wrap svg { width: 17px; height: 17px; color: var(--accent); }
+        .category-row .list-left span:last-child { font-size: 0.85rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .cat-actions { display: flex; gap: 6px; flex-shrink: 0; margin-left: 10px; }
+        .icon-action-btn {
+            width: 34px; height: 34px; border-radius: 10px;
+            border: 1px solid var(--border); background: var(--bg);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .icon-action-btn svg { width: 16px; height: 16px; color: var(--text-soft); }
+        .icon-action-btn.delete-cat-btn { border-color: var(--danger-soft); background: var(--danger-soft); }
+        .icon-action-btn.delete-cat-btn svg { color: var(--danger); }
+        .icon-action-btn:active { transform: scale(.94); }
+        .category-empty { padding: 28px 14px; text-align: center; color: var(--text-soft); font-size: 0.82rem; }
+        .section-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+        .section-row .section-title { margin-bottom: 0; }
+        .add-cat-link {
+            font-size: 0.72rem; font-weight: 700; color: var(--accent);
+            border: 1px dashed var(--accent); border-radius: 8px;
+            padding: 4px 9px; text-decoration: none; flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .add-cat-link:active { background: var(--accent-soft); }
+
+        /* ============ MODAL CARD (edit / konfirmasi) ============ */
+        .modal-card { width: 100%; max-width: 360px; background: var(--surface); border-radius: 20px; padding: 18px; border: 1px solid var(--border); }
+        .modal-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .modal-card-head h2 { font-size: 1.05rem; font-weight: 700; }
+        .modal-x { width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--bg); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .modal-x svg { width: 15px; height: 15px; color: var(--text-soft); }
+        .field-group { margin-bottom: 16px; }
+        .field-group:last-child { margin-bottom: 0; }
+        .field-group label { font-size: 0.68rem; color: var(--text-soft); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; display: block; margin-bottom: 8px; }
+        .text-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; font-size: 0.92rem; font-weight: 600; color: var(--text); font-family: inherit; outline: none; }
+        .text-input::placeholder { color: #B9C3DD; }
+        .icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .icon-option { aspect-ratio: 1; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .icon-option svg { width: 18px; height: 18px; color: var(--text-soft); }
+        .icon-option.active { border-color: var(--accent); background: var(--accent-soft); }
+        .icon-option.active svg { color: var(--accent); }
+        .modal-card-actions { display: flex; gap: 8px; margin-top: 18px; }
+        .modal-btn-cancel, .modal-btn-save, .modal-btn-danger {
+            flex: 1; border: none; border-radius: 10px; padding: 11px;
+            font-size: 0.85rem; font-weight: 700; font-family: inherit; cursor: pointer;
+        }
+        .modal-btn-cancel { background: var(--bg); border: 1px solid var(--border); color: var(--text-soft); }
+        .modal-btn-save { background: var(--accent); color: #fff; }
+        .modal-btn-danger { background: var(--danger); color: #fff; }
+        .modal-btn-cancel:active, .modal-btn-save:active, .modal-btn-danger:active { transform: scale(.98); }
+        .confirm-card { text-align: center; }
+        .confirm-icon { width: 52px; height: 52px; border-radius: 50%; background: var(--danger-soft); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+        .confirm-icon svg { width: 24px; height: 24px; color: var(--danger); }
+        .confirm-card h2 { font-size: 1rem; margin-bottom: 8px; }
+        .confirm-card p { font-size: 0.78rem; color: var(--text-soft); line-height: 1.5; }
+
         /* ============ BOTTOM NAV ============ */
         .bottom-nav {
             position: fixed; left: 0; right: 0; bottom: 0;
@@ -322,6 +384,17 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ATUR KATEGORI -->
+                <button type="button" class="list-item" id="openCategoriesPage">
+                    <div class="list-left">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+                        <span>Atur kategori</span>
+                    </div>
+                    <div class="list-right">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                </button>
             </div>
         </section>
 
@@ -457,6 +530,31 @@
     </main>
 </div>
 
+<!-- ============ PAGE 3: ATUR KATEGORI ============ -->
+<div class="page" id="pageCategories" hidden>
+    <header class="page-head">
+        <button type="button" class="back-btn" id="backFromCategories" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div class="head-text">
+            <h1>Atur kategori</h1>
+            <p>Edit nama &amp; ikon, atau hapus kategori</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="section-row">
+                <div class="section-title">Kategori</div>
+                <a href="../tambah-kategori/index.html" class="add-cat-link">+ Tambah kategori</a>
+            </div>
+            <div class="list-card" id="categoryList">
+                <!-- diisi lewat JS -->
+            </div>
+        </section>
+    </main>
+</div>
+
 <!-- ============ MODAL 1: quick-add lock screen ============ -->
 <div class="modal-overlay" id="modalOverlay" hidden>
     <div class="phone-frame" role="dialog" aria-modal="true" aria-label="Pratinjau popup lock screen">
@@ -572,6 +670,47 @@
     </div>
 </div>
 
+<!-- ============ MODAL 3: edit kategori ============ -->
+<div class="modal-overlay" id="editCatOverlay" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Edit kategori">
+        <div class="modal-card-head">
+            <h2>Edit kategori</h2>
+            <button type="button" class="modal-x" id="editCatClose" aria-label="Tutup">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-card-body">
+            <div class="field-group">
+                <label for="catNameInput">Nama kategori</label>
+                <input type="text" id="catNameInput" class="text-input" placeholder="Misal: Makanan" maxlength="20">
+            </div>
+            <div class="field-group">
+                <label>Pilih ikon</label>
+                <div class="icon-grid" id="iconGrid"></div>
+            </div>
+        </div>
+        <div class="modal-card-actions">
+            <button type="button" class="modal-btn-cancel" id="editCatCancel">Batal</button>
+            <button type="button" class="modal-btn-save" id="editCatSave">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ MODAL 4: konfirmasi hapus kategori ============ -->
+<div class="modal-overlay" id="deleteCatOverlay" hidden>
+    <div class="modal-card confirm-card" role="dialog" aria-modal="true" aria-label="Konfirmasi hapus kategori">
+        <div class="confirm-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <h2 id="deleteCatTitle">Hapus kategori "Makanan"?</h2>
+        <p>Transaksi yang sudah memakai kategori ini tidak akan terhapus, tapi kategori tidak akan muncul lagi sebagai pilihan baru.</p>
+        <div class="modal-card-actions">
+            <button type="button" class="modal-btn-cancel" id="deleteCatCancel">Batal</button>
+            <button type="button" class="modal-btn-danger" id="deleteCatConfirm">Hapus</button>
+        </div>
+    </div>
+</div>
+
 <nav class="bottom-nav">
 
     <!-- Home -->
@@ -684,16 +823,23 @@ const previewDivider = document.getElementById('previewDivider');
 lockToggle.addEventListener('change', ()=>{ previewDivider.hidden = !lockToggle.checked; });
 
 /* =========================================================
-   NAVIGASI: Pengaturan <-> Batas pengeluaran
+   NAVIGASI: Pengaturan <-> Batas pengeluaran <-> Atur kategori
 ========================================================= */
 const pageSettings  = document.getElementById('pageSettings');
 const pageLimit     = document.getElementById('pageLimit');
+const pageCategories = document.getElementById('pageCategories');
 
 document.getElementById('openLimitPage').addEventListener('click', ()=>{
     pageSettings.hidden = true; pageLimit.hidden = false; window.scrollTo(0,0);
 });
 document.getElementById('backFromLimit').addEventListener('click', ()=>{
     pageLimit.hidden = true; pageSettings.hidden = false; window.scrollTo(0,0);
+});
+document.getElementById('openCategoriesPage').addEventListener('click', ()=>{
+    pageSettings.hidden = true; pageCategories.hidden = false; window.scrollTo(0,0);
+});
+document.getElementById('backFromCategories').addEventListener('click', ()=>{
+    pageCategories.hidden = true; pageSettings.hidden = false; window.scrollTo(0,0);
 });
 
 /* =========================================================
@@ -714,6 +860,134 @@ syncBody('monthlyToggle', 'monthlyBody');
 formatRupiahInput(document.getElementById('dailyAmount'));
 formatRupiahInput(document.getElementById('weeklyAmount'));
 formatRupiahInput(document.getElementById('monthlyAmount'));
+
+/* =========================================================
+   ATUR KATEGORI: render, edit, hapus
+========================================================= */
+const ICONS = {
+    makanan:    '<path d="M3 3v7c0 1.1.9 2 2 2h2V3"/><path d="M5 3v18"/><path d="M19 3a4 4 0 0 0-4 4v5h4"/><path d="M17 12v9"/>',
+    transport:  '<path d="M5 17h-2v-6l2-5h11l2 5h1a2 2 0 0 1 2 2v4h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
+    hiburan:    '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5l3 4M14 5l3 4"/>',
+    belanja:    '<path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+    lainnya:    '<circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>',
+    kesehatan:  '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+    pendidikan: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    tagihan:    '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>',
+    rumah:      '<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+    hadiah:     '<rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13"/><path d="M3 12h18"/><path d="M7.5 8a2.5 2.5 0 1 1 0-5C9 3 12 5 12 8"/><path d="M16.5 8a2.5 2.5 0 1 0 0-5C15 3 12 5 12 8"/>'
+};
+
+let categories = [
+    { id: 'makanan',   name: 'Makanan',   icon: 'makanan'   },
+    { id: 'transport', name: 'Transport', icon: 'transport' },
+    { id: 'hiburan',   name: 'Hiburan',   icon: 'hiburan'   },
+    { id: 'belanja',   name: 'Belanja',   icon: 'belanja'   },
+    { id: 'lainnya',   name: 'Lainnya',   icon: 'lainnya'   }
+];
+
+const categoryList = document.getElementById('categoryList');
+
+function renderCategoryList(){
+    if(categories.length === 0){
+        categoryList.innerHTML = '<div class="category-empty">Belum ada kategori.</div>';
+        return;
+    }
+    categoryList.innerHTML = categories.map(cat => `
+        <div class="category-row" data-id="${cat.id}">
+            <div class="list-left">
+                <span class="cat-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[cat.icon] || ICONS.lainnya}</svg></span>
+                <span>${cat.name}</span>
+            </div>
+            <div class="cat-actions">
+                <button type="button" class="icon-action-btn edit-cat-btn" data-id="${cat.id}" aria-label="Edit kategori ${cat.name}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                </button>
+                <button type="button" class="icon-action-btn delete-cat-btn" data-id="${cat.id}" aria-label="Hapus kategori ${cat.name}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    categoryList.querySelectorAll('.edit-cat-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=> openEditCat(btn.dataset.id));
+    });
+    categoryList.querySelectorAll('.delete-cat-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=> openDeleteCat(btn.dataset.id));
+    });
+}
+renderCategoryList();
+
+/* ---------- EDIT KATEGORI ---------- */
+const editCatOverlay = document.getElementById('editCatOverlay');
+const catNameInput   = document.getElementById('catNameInput');
+const iconGrid       = document.getElementById('iconGrid');
+let editingId = null;
+let selectedIcon = null;
+
+function openEditCat(id){
+    const cat = categories.find(c => c.id === id);
+    if(!cat) return;
+    editingId = id;
+    selectedIcon = cat.icon;
+    catNameInput.value = cat.name;
+
+    iconGrid.innerHTML = Object.keys(ICONS).map(key => `
+        <button type="button" class="icon-option ${key===selectedIcon?'active':''}" data-icon="${key}" aria-label="Ikon ${key}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[key]}</svg>
+        </button>
+    `).join('');
+
+    iconGrid.querySelectorAll('.icon-option').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            iconGrid.querySelectorAll('.icon-option').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedIcon = btn.dataset.icon;
+        });
+    });
+
+    editCatOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(()=> catNameInput.focus(), 50);
+}
+function closeEditCat(){ editCatOverlay.hidden = true; document.body.style.overflow=''; editingId=null; }
+
+document.getElementById('editCatClose').addEventListener('click', closeEditCat);
+document.getElementById('editCatCancel').addEventListener('click', closeEditCat);
+editCatOverlay.addEventListener('click', e=>{ if(e.target===editCatOverlay) closeEditCat(); });
+
+document.getElementById('editCatSave').addEventListener('click', ()=>{
+    const newName = catNameInput.value.trim();
+    if(!newName){ catNameInput.focus(); return; }
+    const cat = categories.find(c => c.id === editingId);
+    if(cat){ cat.name = newName; cat.icon = selectedIcon; }
+    renderCategoryList();
+    closeEditCat();
+});
+
+/* ---------- HAPUS KATEGORI ---------- */
+const deleteCatOverlay = document.getElementById('deleteCatOverlay');
+const deleteCatTitle   = document.getElementById('deleteCatTitle');
+let deletingId = null;
+
+function openDeleteCat(id){
+    const cat = categories.find(c => c.id === id);
+    if(!cat) return;
+    deletingId = id;
+    deleteCatTitle.textContent = `Hapus kategori "${cat.name}"?`;
+    deleteCatOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+}
+function closeDeleteCat(){ deleteCatOverlay.hidden = true; document.body.style.overflow=''; deletingId=null; }
+
+document.getElementById('deleteCatCancel').addEventListener('click', closeDeleteCat);
+deleteCatOverlay.addEventListener('click', e=>{ if(e.target===deleteCatOverlay) closeDeleteCat(); });
+
+document.getElementById('deleteCatConfirm').addEventListener('click', ()=>{
+    categories = categories.filter(c => c.id !== deletingId);
+    renderCategoryList();
+    closeDeleteCat();
+});
 
 /* =========================================================
    MODAL 1: quick-add lock screen
@@ -796,6 +1070,8 @@ document.addEventListener('keydown', e=>{
     if(e.key!=='Escape') return;
     if(!modalOverlay.hidden) closeModal();
     if(!limitModalOverlay.hidden) closeLimitModal();
+    if(!editCatOverlay.hidden) closeEditCat();
+    if(!deleteCatOverlay.hidden) closeDeleteCat();
 });
 </script>
 </body>

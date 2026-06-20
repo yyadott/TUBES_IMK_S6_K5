@@ -410,7 +410,7 @@ input:checked + .slider:before{
     </div>
 
     <div class="budget-card" id="budgetCard">
-        <div class="budget-label">Total Budget</div>
+        <div class="budget-label">Total Saldo</div>
         <div class="budget-total" id="totalBudget">Rp0</div>
     </div>
 
@@ -441,7 +441,8 @@ input:checked + .slider:before{
         </div>
 
         <input
-            type="number"
+            type="text"
+            inputmode="numeric"
             id="budgetInput"
             class="modal-input"
             placeholder="Masukkan nominal">
@@ -608,6 +609,19 @@ function formatRupiah(number){
     return "Rp" + number.toLocaleString('id-ID');
 }
 
+// Mengubah string angka mentah menjadi format dengan prefix Rp dan separator titik (mis. 1000000 -> Rp1.000.000)
+function formatNumberWithDots(value){
+    const digits = String(value).replace(/\D/g,'');
+    if(!digits) return '';
+    return "Rp" + parseInt(digits,10).toLocaleString('id-ID');
+}
+
+// Mengubah string berformat titik kembali menjadi angka murni
+function parseDottedNumber(value){
+    const digits = String(value).replace(/\D/g,'');
+    return digits ? parseInt(digits,10) : 0;
+}
+
 function calculateTotal(){
     return categories.reduce((a,b)=>a+b.value,0);
 }
@@ -675,7 +689,7 @@ function openCategory(index){
         .textContent=categories[index].name;
 
     budgetInput.value=
-        categories[index].value;
+        formatNumberWithDots(categories[index].value);
 
     modal.classList.add('active');
 }
@@ -688,7 +702,7 @@ function openManualBudget(){
     document.getElementById('modalSubtitle')
         .textContent='';
 
-    budgetInput.value=manualBudget;
+    budgetInput.value=formatNumberWithDots(manualBudget);
 
     selectedIndex='manual';
 
@@ -716,8 +730,7 @@ document
 .getElementById('saveBtn')
 .addEventListener('click',()=>{
 
-    const value =
-        parseInt(budgetInput.value)||0;
+    const value = parseDottedNumber(budgetInput.value);
 
     if(selectedIndex==='manual'){
 
@@ -733,6 +746,28 @@ document
 
     renderCategories();
     updateTotal();
+});
+
+// Auto-format input angka dengan separator titik sambil mempertahankan posisi kursor
+budgetInput.addEventListener('input', function(){
+
+    const before = this.value;
+    const dotsBefore = (before.slice(0, this.selectionStart).match(/\./g) || []).length;
+
+    this.value = formatNumberWithDots(before);
+
+    const dotsAfter = (this.value.slice(0, this.selectionStart).match(/\./g) || []).length;
+    const newPos = this.selectionStart + (dotsAfter - dotsBefore >= 0 ? 0 : 0);
+
+    // hitung ulang posisi kursor berdasarkan jumlah digit, bukan jumlah karakter total
+    const digitsBeforeCursor = before.slice(0, this.selectionStart).replace(/\D/g,'').length;
+    let pos = 0;
+    let digitCount = 0;
+    while(pos < this.value.length && digitCount < digitsBeforeCursor){
+        if(/\d/.test(this.value[pos])) digitCount++;
+        pos++;
+    }
+    this.setSelectionRange(pos, pos);
 });
 
 toggle.addEventListener('change',function(){
